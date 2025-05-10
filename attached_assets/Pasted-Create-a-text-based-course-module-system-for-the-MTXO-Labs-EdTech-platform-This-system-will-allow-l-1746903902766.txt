@@ -1,0 +1,95 @@
+Create a text-based course module system for the MTXO Labs EdTech platform.
+This system will allow learners to:
+
+Browse and enroll in AI/ML courses
+
+Read through text-based lessons (no video content)
+
+Manually mark each module as complete
+
+The platform should have a futuristic, elegant design (dark/light mode), and be structured for eventual upgrade to multimedia content.
+
+📖 1. Course Detail Page (Text-Focused)
+Display course info: title, description, author, skill level
+
+List of modules/lessons in order
+
+Each module should show:
+
+Title
+
+Short summary
+
+Status: [✅ Completed] or [❌ Incomplete]
+
+Button: [Mark as Complete]
+
+Clicking the module opens its full text content view
+
+
+📝 2. Lesson Page (Text Reader)
+Heading: Module title
+
+Content block: rich text (markdown or formatted JSX)
+
+[Mark as Complete] button:
+
+When clicked:
+
+Updates completion state in local component state or context
+
+Shows a check icon and toast: “Module marked as complete”
+
+Navigation buttons:
+
+[← Previous] | [Next →]
+
+💡 Styling:
+
+Use scrollable reader panel with padding and line spacing
+
+Highlight quotes, code blocks, or note sections in distinct styles
+
+Animate progress with a subtle glow or color fill
+
+✅ 3. Progress Tracker
+On the course page or sidebar:
+
+Show overall progress bar (e.g., 3/5 modules completed)
+
+Optionally show a list with completion checkmarks
+
+Display a completion message or certificate teaser when all modules are marked complete
+
+💳 4. Enrollment & Access
+Use mock state to simulate:
+
+Free vs. locked content
+
+[Enroll Now] button that toggles user access
+
+Show lock icon on modules if user hasn't enrolled yet
+
+🎨 5. Design & UX Notes
+Text content layout:
+
+Use full-width on desktop, stacked cards on mobile
+
+Clean serif or rounded sans-serif font for body text
+
+Include section headings, numbered lists, and tips
+
+Dark mode: deep black with electric blue accents
+
+Light mode: subtle gradients, soft shadows
+
+Use Tailwind, CSS Modules, or Styled Components for styling
+
+⚙️ Dev Implementation Suggestions
+Store course state in localStorage or context
+
+Use mock course data in a courses.json file
+
+Use a single route for /:courseId/:moduleId to render content dynamically
+
+Use useParams() or URL routing for module selection

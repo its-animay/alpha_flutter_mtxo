@@ -37,7 +37,6 @@ export default function LessonPage() {
   
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [currentTab, setCurrentTab] = useState<string>("content");
-  const videoRef = useRef<HTMLVideoElement>(null);
   
   const course = courseId ? getCourseById(courseId) : undefined;
   
@@ -72,42 +71,32 @@ export default function LessonPage() {
   const completedLessons = 0; // This would be fetched from user data
   const progressPercentage = (completedLessons / totalLessons) * 100;
   
-  // Video states
-  const [isVideoPlaying, setIsVideoPlaying] = useState(false);
-  const [videoProgress, setVideoProgress] = useState(0);
-  const [videoVolume, setVideoVolume] = useState(1);
+  // Module completion state
+  const [isModuleCompleted, setIsModuleCompleted] = useState(false);
+  const [showCompletionToast, setShowCompletionToast] = useState(false);
   
-  // Simulated video URL
-  const videoSrc = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4";
+  // This would come from localStorage in a real implementation
+  useEffect(() => {
+    // Check if this lesson is marked as completed in localStorage
+    const completedLessons = JSON.parse(localStorage.getItem('completedLessons') || '{}');
+    const lessonKey = `${courseId}-${moduleId}-${lessonId}`;
+    setIsModuleCompleted(!!completedLessons[lessonKey]);
+  }, [courseId, moduleId, lessonId]);
   
-  // Toggle video play/pause
-  const toggleVideoPlayback = () => {
-    if (videoRef.current) {
-      if (isVideoPlaying) {
-        videoRef.current.pause();
-      } else {
-        videoRef.current.play();
-      }
-      setIsVideoPlaying(!isVideoPlaying);
-    }
-  };
-  
-  // Update video progress
-  const handleTimeUpdate = () => {
-    if (videoRef.current) {
-      const progress = (videoRef.current.currentTime / videoRef.current.duration) * 100;
-      setVideoProgress(progress);
-    }
-  };
-  
-  // Jump to position in video
-  const handleProgressBarClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (videoRef.current) {
-      const progressBar = e.currentTarget;
-      const rect = progressBar.getBoundingClientRect();
-      const pos = (e.clientX - rect.left) / rect.width;
-      videoRef.current.currentTime = pos * videoRef.current.duration;
-    }
+  // Mark lesson as complete
+  const markAsComplete = () => {
+    const lessonKey = `${courseId}-${moduleId}-${lessonId}`;
+    const completedLessons = JSON.parse(localStorage.getItem('completedLessons') || '{}');
+    completedLessons[lessonKey] = true;
+    localStorage.setItem('completedLessons', JSON.stringify(completedLessons));
+    
+    setIsModuleCompleted(true);
+    setShowCompletionToast(true);
+    
+    // Hide toast after 3 seconds
+    setTimeout(() => {
+      setShowCompletionToast(false);
+    }, 3000);
   };
   
   return (
@@ -204,98 +193,53 @@ export default function LessonPage() {
         
         {/* Main content */}
         <main className="flex-1 flex flex-col overflow-hidden">
-          <div className="bg-black aspect-video relative">
-            <video
-              ref={videoRef}
-              className="w-full h-full"
-              src={videoSrc}
-              poster="https://placehold.co/1200x675/1a202c/e2e8f0?text=Video+Thumbnail"
-              onTimeUpdate={handleTimeUpdate}
-              onPlay={() => setIsVideoPlaying(true)}
-              onPause={() => setIsVideoPlaying(false)}
-              onEnded={() => setIsVideoPlaying(false)}
-            />
-            
-            {/* Video controls overlay */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent flex flex-col justify-end">
-              {/* Progress bar */}
-              <div 
-                className="w-full h-2 bg-gray-700 cursor-pointer"
-                onClick={handleProgressBarClick}
-              >
-                <div 
-                  className="h-full bg-primary"
-                  style={{ width: `${videoProgress}%` }}
-                />
-              </div>
-              
-              {/* Controls */}
-              <div className="p-4 flex items-center">
-                <Button 
-                  variant="ghost" 
-                  size="icon" 
-                  className="text-white"
-                  onClick={toggleVideoPlayback}
+          <div className="bg-card/50 p-6 border-b relative">
+            {/* Module Header with completion status */}
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-3">
+                <div className={`h-10 w-10 rounded-full flex items-center justify-center 
+                  ${isModuleCompleted 
+                    ? 'bg-green-500/20 text-green-500' 
+                    : 'bg-primary/20 text-primary'}`}
                 >
-                  {isVideoPlaying ? (
-                    <div className="h-5 w-5 bg-white/20 rounded-md" />
-                  ) : (
-                    <PlayCircle className="h-5 w-5" />
-                  )}
-                </Button>
-                
-                {/* Playback rate dropdown would go here */}
-                
-                <div className="ml-auto flex items-center gap-2">
-                  <Button 
-                    variant="ghost" 
-                    size="sm" 
-                    className="text-white text-xs rounded-full px-3 py-1 bg-white/10"
-                  >
-                    HD
-                  </Button>
-                  
-                  <Button 
-                    variant="ghost" 
-                    size="sm" 
-                    className="text-white text-xs rounded-full px-3 py-1 bg-white/10"
-                  >
-                    1x
-                  </Button>
-                  
-                  <Button 
-                    variant="ghost" 
-                    size="sm" 
-                    className="text-white text-xs rounded-full px-3 py-1 bg-white/10"
-                  >
-                    CC
-                  </Button>
-                  
-                  <Button 
-                    variant="ghost" 
-                    size="icon" 
-                    className="text-white ml-2"
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
-                      <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
-                      <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
-                    </svg>
-                  </Button>
-                  
-                  <Button 
-                    variant="ghost" 
-                    size="icon" 
-                    className="text-white"
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
-                      <path d="M12 12v.01" />
-                    </svg>
-                  </Button>
+                  {isModuleCompleted ? <Check className="h-5 w-5" /> : moduleId.charAt(0).toUpperCase()}
+                </div>
+                <div>
+                  <h2 className="text-xl font-bold">{currentModule.title}</h2>
+                  <p className="text-sm text-muted-foreground">{currentModule.description}</p>
                 </div>
               </div>
+              
+              <Badge 
+                variant="outline" 
+                className={`px-3 py-1 
+                  ${isModuleCompleted 
+                    ? 'bg-green-500/20 text-green-500 border-green-500/20' 
+                    : 'bg-primary/10 text-primary border-primary/20'}`}
+              >
+                {isModuleCompleted ? '✅ Completed' : '❌ Incomplete'}
+              </Badge>
             </div>
+            
+            {/* Module progress */}
+            <div className="mb-2">
+              <div className="flex items-center justify-between text-sm text-muted-foreground mb-1">
+                <span>Your progress in this module</span>
+                <span>Lesson {currentModule.lessons.findIndex(l => l.id === lessonId) + 1} of {currentModule.lessons.length}</span>
+              </div>
+              <Progress 
+                value={(currentModule.lessons.findIndex(l => l.id === lessonId) + 1) / currentModule.lessons.length * 100} 
+                className="h-2" 
+              />
+            </div>
+            
+            {/* Completion toast overlay (conditionally rendered) */}
+            {showCompletionToast && (
+              <div className="absolute top-4 right-4 z-50 bg-green-500 text-white px-4 py-2 rounded-md flex items-center gap-2 animate-fade-in">
+                <Check className="h-4 w-4" />
+                <span>Module marked as complete!</span>
+              </div>
+            )}
           </div>
           
           <div className="flex-1 overflow-hidden p-6">
@@ -328,9 +272,21 @@ export default function LessonPage() {
                   Discussion
                 </Button>
                 
-                <Button variant="outline" size="sm" className="gap-1">
-                  <ThumbsUp className="h-4 w-4" />
-                  <span className="hidden sm:inline">Mark as Complete</span>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className={`gap-1 ${isModuleCompleted ? 'bg-green-500/10 text-green-500 border-green-500/20' : ''}`}
+                  onClick={markAsComplete}
+                  disabled={isModuleCompleted}
+                >
+                  {isModuleCompleted ? (
+                    <Check className="h-4 w-4" />
+                  ) : (
+                    <ThumbsUp className="h-4 w-4" />
+                  )}
+                  <span className="hidden sm:inline">
+                    {isModuleCompleted ? 'Completed' : 'Mark as Complete'}
+                  </span>
                 </Button>
               </div>
             </div>
