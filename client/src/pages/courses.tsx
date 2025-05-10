@@ -335,7 +335,7 @@ function CourseCard({ course }: CourseCardProps) {
     : course.instructor.avatar;
 
   return (
-    <Card className="group overflow-hidden transition-all duration-300 hover:shadow-lg glass-card">
+    <Card className="group overflow-hidden transition-all duration-300 hover:shadow-lg glass-card hover:border-primary/50 transform-gpu hover:-translate-y-1">
       <div className="relative">
         <div className="aspect-video overflow-hidden">
           <img 
@@ -343,27 +343,37 @@ function CourseCard({ course }: CourseCardProps) {
             alt={course.title} 
             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" 
           />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
         </div>
-        <div className="absolute top-3 right-3">
+        <div className="absolute top-3 right-3 z-10">
           {course.priceType === "Free" ? (
-            <Badge className="bg-green-500 hover:bg-green-600">Free</Badge>
+            <Badge className="bg-green-500 hover:bg-green-600 shadow-lg">Free</Badge>
           ) : (
             course.enrollmentOptions.freeTrial && (
-              <Badge className="bg-primary hover:bg-primary/80">Free Trial</Badge>
+              <Badge className="bg-primary hover:bg-primary/80 shadow-lg">Free Trial</Badge>
             )
           )}
+        </div>
+        <div className="absolute bottom-3 left-3 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          <Badge variant="outline" className="bg-black/50 backdrop-blur-sm border-white/10 text-white">
+            {course.skillLevel}
+          </Badge>
         </div>
       </div>
       
       <CardHeader className="pb-2">
-        <div className="flex items-center gap-2 mb-1">
+        <div className="flex items-center gap-2 mb-2">
           {course.tags.slice(0, 2).map(tag => (
-            <Badge key={tag} variant="outline" className="text-xs">
+            <Badge 
+              key={tag} 
+              variant="outline" 
+              className="text-xs bg-primary/10 hover:bg-primary/20 text-primary border-primary/20"
+            >
               {tag}
             </Badge>
           ))}
           {course.tags.length > 2 && (
-            <Badge variant="outline" className="text-xs">
+            <Badge variant="outline" className="text-xs bg-secondary/10 hover:bg-secondary/20 text-secondary border-secondary/20">
               +{course.tags.length - 2}
             </Badge>
           )}
@@ -379,8 +389,8 @@ function CourseCard({ course }: CourseCardProps) {
       </CardHeader>
       
       <CardContent className="pb-2">
-        <div className="flex items-center gap-2 mb-3">
-          <div className="h-8 w-8 rounded-full overflow-hidden">
+        <div className="flex items-center gap-3 mb-3 p-2 rounded-lg bg-muted/30 border border-muted/50">
+          <div className="h-10 w-10 rounded-full overflow-hidden ring-2 ring-primary/20">
             <img 
               src={instructorAvatarSrc} 
               alt={course.instructor.name} 
@@ -395,49 +405,62 @@ function CourseCard({ course }: CourseCardProps) {
         
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-1">
-            <div className="flex">
+            <div className="flex bg-muted/30 p-1 rounded-md">
               {[...Array(5)].map((_, i) => (
                 <Star 
                   key={i} 
                   className={`h-4 w-4 ${i < Math.floor(course.rating) ? "text-yellow-400 fill-yellow-400" : "text-gray-300"}`} 
+                  fill={i < Math.floor(course.rating) ? "currentColor" : "none"}
                 />
               ))}
+              <span className="text-sm font-medium ml-1">{course.rating.toFixed(1)}</span>
             </div>
-            <span className="text-sm font-medium">{course.rating.toFixed(1)}</span>
             <span className="text-xs text-muted-foreground">({course.reviewCount})</span>
           </div>
           
-          <div className="flex items-center gap-1 text-sm text-muted-foreground">
+          <div className="flex items-center gap-1 text-sm text-muted-foreground bg-muted/30 p-1 rounded-md">
             <Clock className="h-4 w-4" />
             <span>{course.totalDuration}</span>
           </div>
         </div>
       </CardContent>
       
-      <Separator />
+      <Separator className="bg-gradient-to-r from-transparent via-primary/20 to-transparent" />
       
       <CardFooter className="p-4 flex justify-between items-center">
         <div>
           {course.priceType === "Free" ? (
-            <span className="font-bold text-lg">Free</span>
+            <div className="flex flex-col">
+              <span className="font-bold text-lg text-green-500">Free</span>
+              <span className="text-xs text-muted-foreground">Lifetime Access</span>
+            </div>
           ) : (
             <div>
               {course.enrollmentOptions.oneTime.discountedPrice ? (
-                <div className="flex items-center gap-2">
-                  <span className="font-bold text-lg">${course.enrollmentOptions.oneTime.discountedPrice}</span>
-                  <span className="text-muted-foreground line-through text-sm">${course.enrollmentOptions.oneTime.price}</span>
+                <div className="flex flex-col">
+                  <div className="flex items-center gap-2">
+                    <span className="font-bold text-lg text-primary">${course.enrollmentOptions.oneTime.discountedPrice}</span>
+                    <span className="text-muted-foreground line-through text-sm">${course.enrollmentOptions.oneTime.price}</span>
+                  </div>
+                  <span className="text-xs text-green-500">
+                    Save ${(course.enrollmentOptions.oneTime.price - course.enrollmentOptions.oneTime.discountedPrice).toFixed(2)}
+                  </span>
                 </div>
               ) : (
-                <span className="font-bold text-lg">${course.enrollmentOptions.oneTime.price}</span>
+                <div className="flex flex-col">
+                  <span className="font-bold text-lg text-primary">${course.enrollmentOptions.oneTime.price}</span>
+                  <span className="text-xs text-muted-foreground">One-time payment</span>
+                </div>
               )}
             </div>
           )}
         </div>
         
         <Link href={`/courses/${course.id}`}>
-          <Button className="primary-btn">
-            <span>Preview Course</span>
-            <ChevronRight className="ml-1 h-4 w-4" />
+          <Button className="primary-btn group relative overflow-hidden">
+            <span className="z-10 relative">Preview Course</span>
+            <ChevronRight className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-1 relative z-10" />
+            <div className="absolute inset-0 bg-gradient-to-r from-primary/80 to-primary opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
           </Button>
         </Link>
       </CardFooter>

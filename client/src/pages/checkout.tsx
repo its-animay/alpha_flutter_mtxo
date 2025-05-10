@@ -24,8 +24,11 @@ import {
 } from 'lucide-react';
 import { apiRequest } from '@/lib/queryClient';
 
-// Will use this when we have the actual Stripe key
-const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY || 'dummy-key');
+// Initialize Stripe with our API key
+if (!import.meta.env.VITE_STRIPE_PUBLIC_KEY) {
+  throw new Error('Missing required Stripe key: VITE_STRIPE_PUBLIC_KEY');
+}
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
 
 export default function Checkout() {
   const [match, params] = useRoute('/checkout/:courseId');
