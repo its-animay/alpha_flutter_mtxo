@@ -89,7 +89,7 @@ export const courses: Course[] = [
     title: "Agentic LLMs Bootcamp",
     subtitle: "Create intelligent AI agents that can reason, plan and execute complex tasks",
     description: "Dive into the world of agentic AI systems and learn how to build autonomous agents powered by large language models. This course covers the theory and practical implementation of autonomous AI systems that can reason, plan, and execute complex tasks without human intervention.",
-    thumbnail: "@assets/courses/agentic-llms.svg",
+    thumbnail: "@assets/courses/agentic-llms-card.svg",
     instructor: {
       id: "1",
       name: "Dr. Emma Chen",
@@ -247,7 +247,7 @@ export const courses: Course[] = [
     title: "MLOps with FastAPI",
     subtitle: "Build, deploy and scale ML models with modern MLOps practices",
     description: "Learn how to build production-ready machine learning systems using FastAPI. This comprehensive course covers the entire MLOps lifecycle, from model development to deployment, monitoring, and maintenance.",
-    thumbnail: "@assets/courses/mlops-fastapi.svg",
+    thumbnail: "@assets/courses/mlops-fastapi-card.svg",
     instructor: {
       id: "2",
       name: "Miguel Ramirez",
@@ -406,7 +406,7 @@ export const courses: Course[] = [
     title: "GenAI Prompt Engineering Lab",
     subtitle: "Master the art and science of effective prompt design for generative AI",
     description: "Become an expert in prompt engineering for generative AI models. This course covers advanced techniques for crafting effective prompts that generate high-quality outputs for various applications, from content creation to code generation.",
-    thumbnail: "@assets/courses/genai-prompt-engineering.svg",
+    thumbnail: "@assets/courses/genai-prompt-engineering-card.svg",
     instructor: {
       id: "3",
       name: "Sophia Williams",
@@ -564,7 +564,7 @@ export const courses: Course[] = [
     title: "Building Autonomous Agents",
     subtitle: "Create and deploy intelligent autonomous agents for real-world tasks",
     description: "Learn how to build sophisticated autonomous agents that can interact with the world, make decisions, and accomplish complex tasks without human intervention. This course covers the latest techniques and frameworks for developing agentic AI systems.",
-    thumbnail: "@assets/courses/autonomous-agents.svg",
+    thumbnail: "@assets/courses/autonomous-agents-card.svg",
     instructor: {
       id: "4",
       name: "Dr. James Liu",

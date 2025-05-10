@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="800" height="450" viewBox="0 0 800 450" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background gradient -->
+  <rect width="800" height="450" fill="url(#paint0_linear)"/>
+  
+  <!-- Grid pattern -->
+  <g opacity="0.1">
+    <path d="M0 100H800" stroke="#E2E8F0" stroke-width="1"/>
+    <path d="M0 200H800" stroke="#E2E8F0" stroke-width="1"/>
+    <path d="M0 300H800" stroke="#E2E8F0" stroke-width="1"/>
+    <path d="M200 0V450" stroke="#E2E8F0" stroke-width="1"/>
+    <path d="M400 0V450" stroke="#E2E8F0" stroke-width="1"/>
+    <path d="M600 0V450" stroke="#E2E8F0" stroke-width="1"/>
+  </g>
+  
+  <!-- Prompt-Response Visualization -->
+  <g transform="translate(250, 100)">
+    <!-- Prompt Box -->
+    <rect x="0" y="0" width="300" height="80" rx="8" fill="#1E293B" stroke="#00C8FF" stroke-width="2"/>
+    <text x="20" y="30" font-family="Space Grotesk, sans-serif" fill="white" font-size="16" font-weight="600">PROMPT:</text>
+    <foreignObject x="20" y="40" width="260" height="30">
+      <div xmlns="http://www.w3.org/1999/xhtml" style="font-family: 'Space Grotesk', sans-serif; color: #E2E8F0; font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+        Explain quantum computing in simple terms...
+      </div>
+    </foreignObject>
+    
+    <!-- Connecting arrow -->
+    <path d="M150 80V110" stroke="#7B42F6" stroke-width="2" stroke-dasharray="4 2">
+      <animate attributeName="stroke-dashoffset" from="24" to="0" dur="2s" repeatCount="indefinite"/>
+    </path>
+    <path d="M145 105L150 110L155 105" stroke="#7B42F6" stroke-width="2"/>
+    
+    <!-- Response Box -->
+    <rect x="0" y="110" width="300" height="120" rx="8" fill="#1E293B" stroke="#7B42F6" stroke-width="2"/>
+    <text x="20" y="140" font-family="Space Grotesk, sans-serif" fill="white" font-size="16" font-weight="600">RESPONSE:</text>
+    <foreignObject x="20" y="150" width="260" height="70">
+      <div xmlns="http://www.w3.org/1999/xhtml" style="font-family: 'Space Grotesk', sans-serif; color: #E2E8F0; font-size: 14px; line-height: 1.4;">
+        Quantum computing uses quantum bits or 'qubits' that can exist in multiple states at once, unlike classical bits...
+      </div>
+    </foreignObject>
+  </g>
+  
+  <!-- Prompt Engineering Tools -->
+  <g transform="translate(600, 120)">
+    <rect x="0" y="0" width="150" height="180" rx="8" fill="#1E293B" stroke="#7B42F6" stroke-width="1.5"/>
+    <text x="75" y="30" text-anchor="middle" font-family="Space Grotesk, sans-serif" fill="white" font-size="16" font-weight="600">TECHNIQUES</text>
+    
+    <!-- Techniques list -->
+    <g transform="translate(15, 50)">
+      <!-- Few-shot -->
+      <rect x="0" y="0" width="120" height="26" rx="13" fill="#172554"/>
+      <text x="60" y="17" text-anchor="middle" font-family="Space Grotesk, sans-serif" fill="#00C8FF" font-size="12" font-weight="600">FEW-SHOT</text>
+      
+      <!-- Chain-of-Thought -->
+      <rect x="0" y="36" width="120" height="26" rx="13" fill="#172554"/>
+      <text x="60" y="53" text-anchor="middle" font-family="Space Grotesk, sans-serif" fill="#7B42F6" font-size="12" font-weight="600">CHAIN-OF-THOUGHT</text>
+      
+      <!-- Zero-shot -->
+      <rect x="0" y="72" width="120" height="26" rx="13" fill="#172554"/>
+      <text x="60" y="89" text-anchor="middle" font-family="Space Grotesk, sans-serif" fill="#00C8FF" font-size="12" font-weight="600">ZERO-SHOT</text>
+      
+      <!-- Role prompting -->
+      <rect x="0" y="108" width="120" height="26" rx="13" fill="#172554"/>
+      <text x="60" y="125" text-anchor="middle" font-family="Space Grotesk, sans-serif" fill="#7B42F6" font-size="12" font-weight="600">ROLE PROMPTING</text>
+    </g>
+  </g>
+  
+  <!-- Prompt patterns -->
+  <g transform="translate(50, 120)">
+    <rect x="0" y="0" width="150" height="180" rx="8" fill="#1E293B" stroke="#00C8FF" stroke-width="1.5"/>
+    <text x="75" y="30" text-anchor="middle" font-family="Space Grotesk, sans-serif" fill="white" font-size="16" font-weight="600">PATTERNS</text>
+    
+    <!-- Code example -->
+    <rect x="15" y="50" width="120" height="110" rx="4" fill="#172554"/>
+    <foreignObject x="25" y="60" width="100" height="90">
+      <div xmlns="http://www.w3.org/1999/xhtml" style="font-family: monospace; color: #E2E8F0; font-size: 10px; line-height: 1.4;">
+        <span style="color: #00C8FF;">system:</span> You are an expert<br/><br/>
+        <span style="color: #7B42F6;">user:</span> Explain...<br/><br/>
+        <span style="color: #00C8FF;">assistant:</span> I'll help...
+      </div>
+    </foreignObject>
+  </g>
+  
+  <!-- AI text generation animation -->
+  <g transform="translate(320, 280)">
+    <text id="typing-text" x="0" y="0" font-family="Space Grotesk, sans-serif" fill="#00C8FF" font-size="14">
+      <tspan x="0" dy="0">G</tspan>
+      <tspan x="10" dy="0">e</tspan>
+      <tspan x="20" dy="0">n</tspan>
+      <tspan x="30" dy="0">e</tspan>
+      <tspan x="40" dy="0">r</tspan>
+      <tspan x="50" dy="0">a</tspan>
+      <tspan x="60" dy="0">t</tspan>
+      <tspan x="70" dy="0">i</tspan>
+      <tspan x="80" dy="0">n</tspan>
+      <tspan x="90" dy="0">g</tspan>
+      <tspan x="100" dy="0">.</tspan>
+      <tspan x="110" dy="0">.</tspan>
+      <tspan x="120" dy="0">.</tspan>
+      <animate attributeName="opacity" values="0.5;1;0.5" dur="2s" repeatCount="indefinite"/>
+    </text>
+  </g>
+  
+  <!-- Course title and content text -->
+  <g filter="url(#text-shadow)">
+    <!-- Course badge -->
+    <rect x="50" y="50" width="130" height="34" rx="17" fill="#7B42F6" fill-opacity="0.2" stroke="#7B42F6" stroke-width="1"/>
+    <text x="115" y="72" text-anchor="middle" fill="white" font-family="Space Grotesk, sans-serif" font-size="14" font-weight="600">ALL LEVELS</text>
+    
+    <!-- Course title -->
+    <text x="50" y="380" fill="white" font-family="Space Grotesk, sans-serif" font-size="38" font-weight="700">GenAI Prompt Engineering Lab</text>
+    <text x="50" y="410" fill="#E2E8F0" font-family="Space Grotesk, sans-serif" font-size="18" font-weight="400">Master the art and science of effective prompt design</text>
+  </g>
+  
+  <!-- Decorative elements -->
+  <circle cx="150" cy="320" r="4" fill="#00C8FF" filter="url(#glow)">
+    <animate attributeName="opacity" values="0.3;1;0.3" dur="4s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="650" cy="350" r="3" fill="#7B42F6" filter="url(#glow)">
+    <animate attributeName="opacity" values="0.3;1;0.3" dur="3s" repeatCount="indefinite"/>
+  </circle>
+  
+  <!-- Definitions for filters and gradients -->
+  <defs>
+    <linearGradient id="paint0_linear" x1="0" y1="0" x2="800" y2="450" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0F172A"/>
+      <stop offset="1" stop-color="#1E293B"/>
+    </linearGradient>
+    
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="2" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+    
+    <filter id="text-shadow" x="-10" y="-10" width="820" height="470">
+      <feDropShadow dx="0" dy="2" stdDeviation="2" flood-opacity="0.5" flood-color="#000000"/>
+    </filter>
+  </defs>
+</svg>

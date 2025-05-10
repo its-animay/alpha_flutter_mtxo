@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="800" height="450" viewBox="0 0 800 450" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background gradient -->
+  <rect width="800" height="450" fill="url(#paint0_linear)"/>
+  
+  <!-- Grid pattern -->
+  <g opacity="0.2">
+    <path d="M0 100H800" stroke="#7B42F6" stroke-width="1"/>
+    <path d="M0 200H800" stroke="#7B42F6" stroke-width="1"/>
+    <path d="M0 300H800" stroke="#7B42F6" stroke-width="1"/>
+    <path d="M200 0V450" stroke="#00C8FF" stroke-width="1"/>
+    <path d="M400 0V450" stroke="#00C8FF" stroke-width="1"/>
+    <path d="M600 0V450" stroke="#00C8FF" stroke-width="1"/>
+  </g>
+  
+  <!-- MLOps Pipeline Visualization -->
+  <g transform="translate(200, 130)">
+    <!-- Pipeline container -->
+    <rect x="0" y="0" width="400" height="120" rx="16" stroke="#00C8FF" stroke-width="2" stroke-dasharray="6 3" fill="url(#pipeline-bg)"/>
+    
+    <!-- Pipeline stages -->
+    <g transform="translate(20, 30)">
+      <!-- Development stage -->
+      <rect x="0" y="0" width="80" height="60" rx="8" fill="#172554" stroke="#00C8FF" stroke-width="1.5"/>
+      <text x="40" y="35" text-anchor="middle" font-family="Space Grotesk, sans-serif" fill="white" font-size="12" font-weight="600">MODEL</text>
+      <text x="40" y="50" text-anchor="middle" font-family="Space Grotesk, sans-serif" fill="white" font-size="12" font-weight="600">DEV</text>
+      
+      <!-- Arrow -->
+      <path d="M80 30H100" stroke="#00C8FF" stroke-width="1.5">
+        <animate attributeName="stroke-dashoffset" from="100" to="0" dur="3s" repeatCount="indefinite"/>
+      </path>
+      <path d="M95 25L100 30L95 35" stroke="#00C8FF" stroke-width="1.5"/>
+      
+      <!-- API stage -->
+      <rect x="100" y="0" width="80" height="60" rx="8" fill="#172554" stroke="#7B42F6" stroke-width="1.5"/>
+      <text x="140" y="35" text-anchor="middle" font-family="Space Grotesk, sans-serif" fill="white" font-size="12" font-weight="600">FASTAPI</text>
+      <text x="140" y="50" text-anchor="middle" font-family="Space Grotesk, sans-serif" fill="white" font-size="12" font-weight="600">SERVICE</text>
+      
+      <!-- Arrow -->
+      <path d="M180 30H200" stroke="#7B42F6" stroke-width="1.5">
+        <animate attributeName="stroke-dashoffset" from="100" to="0" dur="3s" repeatCount="indefinite"/>
+      </path>
+      <path d="M195 25L200 30L195 35" stroke="#7B42F6" stroke-width="1.5"/>
+      
+      <!-- Deployment stage -->
+      <rect x="200" y="0" width="80" height="60" rx="8" fill="#172554" stroke="#00C8FF" stroke-width="1.5"/>
+      <text x="240" y="35" text-anchor="middle" font-family="Space Grotesk, sans-serif" fill="white" font-size="12" font-weight="600">DEPLOY</text>
+      <text x="240" y="50" text-anchor="middle" font-family="Space Grotesk, sans-serif" fill="white" font-size="12" font-weight="600">MONITOR</text>
+      
+      <!-- Arrow -->
+      <path d="M280 30H300" stroke="#00C8FF" stroke-width="1.5">
+        <animate attributeName="stroke-dashoffset" from="100" to="0" dur="3s" repeatCount="indefinite"/>
+      </path>
+      <path d="M295 25L300 30L295 35" stroke="#00C8FF" stroke-width="1.5"/>
+      
+      <!-- Production stage -->
+      <rect x="300" y="0" width="60" height="60" rx="8" fill="#172554" stroke="#7B42F6" stroke-width="1.5"/>
+      <text x="330" y="35" text-anchor="middle" font-family="Space Grotesk, sans-serif" fill="white" font-size="12" font-weight="600">PROD</text>
+    </g>
+  </g>
+  
+  <!-- Data flow animated circles -->
+  <circle cx="260" cy="160" r="3" fill="#00C8FF">
+    <animate attributeName="cx" values="220;340;460;580" dur="4s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="240" cy="160" r="3" fill="#7B42F6">
+    <animate attributeName="cx" values="220;340;460;580" dur="4s" begin="1s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="220" cy="160" r="3" fill="#00C8FF">
+    <animate attributeName="cx" values="220;340;460;580" dur="4s" begin="2s" repeatCount="indefinite"/>
+  </circle>
+  
+  <!-- FastAPI Logo Stylized -->
+  <g transform="translate(680, 100)">
+    <rect x="-25" y="-25" width="50" height="50" rx="10" fill="#009688" opacity="0.8"/>
+    <path d="M0 -15L15 0L0 15L-15 0Z" fill="white" stroke="white" stroke-width="2"/>
+    <circle cx="0" cy="0" r="4" fill="white"/>
+  </g>
+  
+  <!-- Course title and content text -->
+  <g filter="url(#text-shadow)">
+    <!-- Course badge -->
+    <rect x="50" y="50" width="130" height="34" rx="17" fill="#009688" fill-opacity="0.2" stroke="#009688" stroke-width="1"/>
+    <text x="115" y="72" text-anchor="middle" fill="white" font-family="Space Grotesk, sans-serif" font-size="14" font-weight="600">MLOps</text>
+    
+    <!-- Course title -->
+    <text x="50" y="380" fill="white" font-family="Space Grotesk, sans-serif" font-size="38" font-weight="700">MLOps with FastAPI</text>
+    <text x="50" y="410" fill="#E2E8F0" font-family="Space Grotesk, sans-serif" font-size="18" font-weight="400">Build, deploy and scale ML models with modern practices</text>
+  </g>
+  
+  <!-- Decorative code block -->
+  <g transform="translate(50, 120)">
+    <rect x="0" y="0" width="180" height="100" rx="6" fill="#1E293B" stroke="#00C8FF" stroke-width="1" opacity="0.8"/>
+    <text x="10" y="20" font-family="monospace" fill="#E2E8F0" font-size="12">from fastapi import FastAPI</text>
+    <text x="10" y="40" font-family="monospace" fill="#E2E8F0" font-size="12">app = FastAPI()</text>
+    <text x="10" y="60" font-family="monospace" fill="#00C8FF" font-size="12">@app.post("/predict")</text>
+    <text x="10" y="80" font-family="monospace" fill="#7B42F6" font-size="12">def predict(data):</text>
+    <text x="10" y="100" font-family="monospace" fill="#E2E8F0" font-size="12">    return {"result": model(data)}</text>
+  </g>
+  
+  <!-- Floating elements -->
+  <circle cx="150" cy="300" r="4" fill="#00C8FF" filter="url(#glow)">
+    <animate attributeName="cy" values="300;290;300" dur="4s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="650" cy="350" r="4" fill="#7B42F6" filter="url(#glow)">
+    <animate attributeName="cy" values="350;340;350" dur="3s" repeatCount="indefinite"/>
+  </circle>
+  
+  <!-- Definitions for filters and gradients -->
+  <defs>
+    <linearGradient id="paint0_linear" x1="0" y1="0" x2="800" y2="450" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0F172A"/>
+      <stop offset="1" stop-color="#1E293B"/>
+    </linearGradient>
+    
+    <linearGradient id="pipeline-bg" x1="0" y1="0" x2="400" y2="120" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#172554" stop-opacity="0.7"/>
+      <stop offset="1" stop-color="#0F172A" stop-opacity="0.7"/>
+    </linearGradient>
+    
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="2" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+    
+    <filter id="text-shadow" x="-10" y="-10" width="820" height="470">
+      <feDropShadow dx="0" dy="2" stdDeviation="2" flood-opacity="0.5" flood-color="#000000"/>
+    </filter>
+  </defs>
+</svg>
