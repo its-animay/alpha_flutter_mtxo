@@ -66,10 +66,38 @@ export default function LessonPage() {
   const prevLesson = currentLessonIndex > 0 ? flatLessons[currentLessonIndex - 1] : null;
   const nextLesson = currentLessonIndex < flatLessons.length - 1 ? flatLessons[currentLessonIndex + 1] : null;
   
-  // Calculate overall course progress - in a real app this would come from the user's progress data
+  // Calculate overall course progress from localStorage
   const totalLessons = flatLessons.length;
-  const completedLessons = 0; // This would be fetched from user data
-  const progressPercentage = (completedLessons / totalLessons) * 100;
+  const [completedLessons, setCompletedLessons] = useState(0);
+  const [progressPercentage, setProgressPercentage] = useState(0);
+  
+  // Update completed lessons count from localStorage
+  useEffect(() => {
+    const updateCompletedLessonsCount = () => {
+      const storedCompletedLessons = JSON.parse(localStorage.getItem('completedLessons') || '{}');
+      let count = 0;
+      
+      // Count lessons completed for this course
+      flatLessons.forEach(lesson => {
+        const lessonKey = `${courseId}-${lesson.moduleId}-${lesson.id}`;
+        if (storedCompletedLessons[lessonKey]) {
+          count++;
+        }
+      });
+      
+      setCompletedLessons(count);
+      setProgressPercentage((count / totalLessons) * 100);
+    };
+    
+    updateCompletedLessonsCount();
+    
+    // Add event listener to detect localStorage changes
+    window.addEventListener('storage', updateCompletedLessonsCount);
+    
+    return () => {
+      window.removeEventListener('storage', updateCompletedLessonsCount);
+    };
+  }, [courseId, flatLessons, totalLessons]);
   
   // Module completion state
   const [isModuleCompleted, setIsModuleCompleted] = useState(false);
@@ -86,17 +114,33 @@ export default function LessonPage() {
   // Mark lesson as complete
   const markAsComplete = () => {
     const lessonKey = `${courseId}-${moduleId}-${lessonId}`;
-    const completedLessons = JSON.parse(localStorage.getItem('completedLessons') || '{}');
-    completedLessons[lessonKey] = true;
-    localStorage.setItem('completedLessons', JSON.stringify(completedLessons));
+    const completedLessonsObj = JSON.parse(localStorage.getItem('completedLessons') || '{}');
+    completedLessonsObj[lessonKey] = true;
+    localStorage.setItem('completedLessons', JSON.stringify(completedLessonsObj));
     
+    // Update local state
     setIsModuleCompleted(true);
     setShowCompletionToast(true);
+    
+    // Update progress
+    const newCompletedCount = completedLessons + 1;
+    setCompletedLessons(newCompletedCount);
+    setProgressPercentage((newCompletedCount / totalLessons) * 100);
+    
+    // Trigger storage event for other tabs
+    window.dispatchEvent(new Event('storage'));
     
     // Hide toast after 3 seconds
     setTimeout(() => {
       setShowCompletionToast(false);
     }, 3000);
+    
+    // If all lessons are completed, show full completion message
+    if (newCompletedCount === totalLessons) {
+      setTimeout(() => {
+        alert(`🎉 Congratulations! You've completed the entire "${course.title}" course!`);
+      }, 1000);
+    }
   };
   
   return (
@@ -151,7 +195,9 @@ export default function LessonPage() {
                     <div className="space-y-1 pl-1">
                       {module.lessons.map((lesson) => {
                         const isActive = lesson.id === lessonId && module.id === moduleId;
-                        const isCompleted = false; // This would come from user data
+                        const lessonKey = `${courseId}-${module.id}-${lesson.id}`;
+                        const storedCompletedLessons = JSON.parse(localStorage.getItem('completedLessons') || '{}');
+                        const isCompleted = !!storedCompletedLessons[lessonKey];
                         
                         return (
                           <Link 
@@ -160,7 +206,8 @@ export default function LessonPage() {
                           >
                             <div 
                               className={`flex items-center py-1 px-2 rounded-md text-sm
-                                ${isActive ? 'bg-primary/10 text-primary font-medium' : 'hover:bg-muted/50'}
+                                ${isActive ? 'bg-primary/10 text-primary font-medium' : 
+                                  isCompleted ? 'bg-green-500/10 text-green-500' : 'hover:bg-muted/50'}
                               `}
                             >
                               {isCompleted ? (
@@ -301,21 +348,74 @@ export default function LessonPage() {
               <TabsContent value="content" className="mt-4">
                 <ScrollArea className="h-[calc(100vh-400px)]">
                   <div className="prose prose-lg dark:prose-invert max-w-none">
-                    <p>{currentLesson.description}</p>
+                    <div className="mb-4 bg-primary/5 border border-primary/20 rounded-md p-4">
+                      <h3 className="text-primary flex items-center gap-2 mt-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+                        Module Overview
+                      </h3>
+                      <p className="mb-0">{currentLesson.description}</p>
+                    </div>
                     
-                    {/* Simulated lesson content */}
-                    <h2>Overview</h2>
+                    <h2 className="relative border-b pb-2">
+                      <span className="text-primary">1.</span> Introduction to {currentModule.title}
+                      <div className="absolute left-0 bottom-0 w-1/3 h-0.5 bg-primary"></div>
+                    </h2>
+                    
                     <p>In this lesson, we'll explore the fundamental concepts behind {course.title.toLowerCase()}. We'll cover the theoretical foundations and practical applications that make this subject crucial for modern AI systems.</p>
                     
-                    <h2>Key Concepts</h2>
-                    <ul>
-                      <li>Understanding the core architecture</li>
-                      <li>Implementation strategies and best practices</li>
-                      <li>Performance optimization techniques</li>
-                      <li>Real-world applications and case studies</li>
+                    <div className="bg-card border rounded-md p-4 my-6">
+                      <h3 className="text-lg font-semibold flex items-center gap-2 mt-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/></svg>
+                        Key Takeaway
+                      </h3>
+                      <p className="mb-0">The fundamental principles covered in this module form the foundation for all advanced techniques we'll explore later in the course.</p>
+                    </div>
+                    
+                    <h2 className="relative border-b pb-2">
+                      <span className="text-primary">2.</span> Key Concepts
+                      <div className="absolute left-0 bottom-0 w-1/3 h-0.5 bg-primary"></div>
+                    </h2>
+                    
+                    <ul className="space-y-3">
+                      <li className="flex items-start gap-2">
+                        <span className="h-6 w-6 rounded-full bg-primary/20 text-primary flex items-center justify-center flex-shrink-0 mt-0.5">1</span>
+                        <div>
+                          <strong>Understanding the core architecture</strong> - Learn how the underlying systems operate and interact.
+                        </div>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span className="h-6 w-6 rounded-full bg-primary/20 text-primary flex items-center justify-center flex-shrink-0 mt-0.5">2</span>
+                        <div>
+                          <strong>Implementation strategies and best practices</strong> - Discover optimal approaches for real-world applications.
+                        </div>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span className="h-6 w-6 rounded-full bg-primary/20 text-primary flex items-center justify-center flex-shrink-0 mt-0.5">3</span>
+                        <div>
+                          <strong>Performance optimization techniques</strong> - Learn how to improve efficiency and output quality.
+                        </div>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span className="h-6 w-6 rounded-full bg-primary/20 text-primary flex items-center justify-center flex-shrink-0 mt-0.5">4</span>
+                        <div>
+                          <strong>Real-world applications and case studies</strong> - See how these concepts are applied in production environments.
+                        </div>
+                      </li>
                     </ul>
                     
-                    <h2>Practical Implementation</h2>
+                    <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-md p-4 my-6">
+                      <h3 className="text-lg font-semibold flex items-center gap-2 mt-0 text-yellow-500">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                        Important Note
+                      </h3>
+                      <p className="mb-0">When implementing these concepts, always consider the ethical implications and potential biases in your training data.</p>
+                    </div>
+                    
+                    <h2 className="relative border-b pb-2">
+                      <span className="text-primary">3.</span> Practical Implementation
+                      <div className="absolute left-0 bottom-0 w-1/3 h-0.5 bg-primary"></div>
+                    </h2>
+                    
                     <p>Let's look at a practical example of how these concepts are applied in a real-world scenario.</p>
                     
                     <pre className="bg-muted p-4 rounded-md overflow-x-auto"><code>{`# Example Python code
@@ -335,8 +435,86 @@ output = model.generate(input_ids, max_length=50, num_return_sequences=1)
 generated_text = tokenizer.decode(output[0], skip_special_tokens=True)
 print(generated_text)`}</code></pre>
                     
-                    <h2>Conclusion</h2>
+                    <h2 className="relative border-b pb-2">
+                      <span className="text-primary">4.</span> Conclusion
+                      <div className="absolute left-0 bottom-0 w-1/3 h-0.5 bg-primary"></div>
+                    </h2>
+                    
                     <p>By mastering these concepts, you'll be well-equipped to implement sophisticated AI solutions that leverage the power of {course.title.toLowerCase()} techniques.</p>
+                    
+                    <div className="bg-purple-500/10 border border-purple-500/20 rounded-md p-6 my-6">
+                      <h3 className="text-lg font-semibold flex items-center gap-2 mt-0 text-purple-500">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path></svg>
+                        Summary
+                      </h3>
+                      <div className="space-y-2 mt-3">
+                        <div className="flex items-start gap-2">
+                          <div className="h-5 w-5 rounded-full bg-purple-500/20 text-purple-500 flex items-center justify-center flex-shrink-0 mt-0.5">✓</div>
+                          <div>We explored the core principles behind {currentModule.title}</div>
+                        </div>
+                        <div className="flex items-start gap-2">
+                          <div className="h-5 w-5 rounded-full bg-purple-500/20 text-purple-500 flex items-center justify-center flex-shrink-0 mt-0.5">✓</div>
+                          <div>Learned about implementation strategies and best practices</div>
+                        </div>
+                        <div className="flex items-start gap-2">
+                          <div className="h-5 w-5 rounded-full bg-purple-500/20 text-purple-500 flex items-center justify-center flex-shrink-0 mt-0.5">✓</div>
+                          <div>Examined a practical implementation example</div>
+                        </div>
+                        <div className="flex items-start gap-2">
+                          <div className="h-5 w-5 rounded-full bg-purple-500/20 text-purple-500 flex items-center justify-center flex-shrink-0 mt-0.5">✓</div>
+                          <div>Understood how to apply these concepts in real-world scenarios</div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {/* Lesson navigation */}
+                    <div className="flex justify-between items-center border-t pt-6 mt-8">
+                      {prevLesson ? (
+                        <Button variant="outline" asChild className="flex items-center gap-2">
+                          <Link href={`/lesson/${courseId}/${prevLesson.moduleId}/${prevLesson.id}`}>
+                            <ChevronLeft className="h-4 w-4" />
+                            Previous Lesson
+                          </Link>
+                        </Button>
+                      ) : (
+                        <Button variant="outline" disabled className="flex items-center gap-2">
+                          <ChevronLeft className="h-4 w-4" />
+                          Previous Lesson
+                        </Button>
+                      )}
+                      
+                      <Button 
+                        onClick={markAsComplete}
+                        disabled={isModuleCompleted}
+                        className={`${isModuleCompleted ? 'bg-green-500 hover:bg-green-600' : 'bg-primary hover:bg-primary/90'}`}
+                      >
+                        {isModuleCompleted ? (
+                          <>
+                            <Check className="mr-2 h-4 w-4" />
+                            Completed
+                          </>
+                        ) : (
+                          <>
+                            <ThumbsUp className="mr-2 h-4 w-4" />
+                            Mark as Complete
+                          </>
+                        )}
+                      </Button>
+                      
+                      {nextLesson ? (
+                        <Button variant="outline" asChild className="flex items-center gap-2">
+                          <Link href={`/lesson/${courseId}/${nextLesson.moduleId}/${nextLesson.id}`}>
+                            Next Lesson
+                            <ChevronRight className="h-4 w-4" />
+                          </Link>
+                        </Button>
+                      ) : (
+                        <Button variant="outline" disabled className="flex items-center gap-2">
+                          Next Lesson
+                          <ChevronRight className="h-4 w-4" />
+                        </Button>
+                      )}
+                    </div>
                   </div>
                 </ScrollArea>
               </TabsContent>
