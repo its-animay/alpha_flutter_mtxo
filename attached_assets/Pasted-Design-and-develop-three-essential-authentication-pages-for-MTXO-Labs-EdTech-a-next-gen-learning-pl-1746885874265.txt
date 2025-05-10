@@ -1,0 +1,133 @@
+Design and develop three essential authentication pages for MTXO Labs EdTech, a next-gen learning platform for GenAI, MLOps, and intelligent systems.
+These include:
+
+Login
+
+Sign Up
+
+Forgot Password
+
+The experience must be visually stunning in both Light and Dark modes, with a focus on futuristic branding, seamless transitions, and joyful UX for global learners.
+
+🌗 1. Theme Design System (Dual Mode)
+🌑 Dark Mode (Default):
+Background: animated cosmic neural mesh or low-poly particle gradient
+
+Cards: glassmorphism with glowing borders
+
+Colors:
+
+Primary: #00C8FF (Neon Cyan)
+
+Secondary: Electric Violet, Deep Indigo
+
+Inputs: soft-light glowing borders with subtle hover shine
+
+Fonts: Sora, Inter, or Space Grotesk
+
+🌞 Light Mode:
+Background: gradient from #F8FBFF to #E0F0FF
+
+Cards: semi-transparent white with subtle frosted glass blur
+
+Shadows: soft, airy with long falloff
+
+Accent colors: same as dark mode, but softened
+
+Inputs: light gray with inner glow focus
+
+Toggle: top-right 🌞 / 🌚 icon with animated rotation or sliding switch
+
+Switching between themes must feel magical: apply smooth transitions using Framer Motion, CSS transitions, or styled-components.
+
+🔐 Page 1: Login
+Title: “Welcome Back to MTXO EdTech”
+
+Subtext: “Log in and continue your AI journey.”
+
+Fields:
+
+Email
+
+Password (with visibility toggle)
+
+Actions:
+
+[Sign In] (primary CTA)
+
+[Forgot Password?] (link below)
+
+[Continue with Google] (optional)
+
+Footer Text: “New to MTXO? [Sign Up]”
+
+💡 Visual Detail: Animated AI avatar icon fades in, glowing border on Sign In button when hovered.
+
+🧬 Page 2: Signup
+Title: “Join MTXO EdTech — It’s Free”
+
+Subtext: “Master GenAI, Python, and MLOps with the best tools.”
+
+Fields:
+
+Full Name
+
+Email
+
+Password
+
+Confirm Password
+
+Role selector (Learner, Researcher, Educator)
+
+CTA: [Create Account]
+
+Checkbox: “I agree to the Terms & Privacy Policy”
+
+Footer: “Already have an account? [Login]”
+
+🎉 Bonus: On light mode, use soft spotlight animation on focus; on dark mode, input fields glow lightly when active.
+
+🔁 Page 3: Forgot Password
+Title: “Reset Your Password”
+
+Subtext: “Enter your email to receive reset instructions.”
+
+Fields:
+
+Email input
+
+CTA: [Send Reset Link]
+
+Success State (UI only):
+
+“Reset link sent successfully!” with ✅ icon or animated envelope
+
+Footer: [Return to Login]
+
+📱 Responsiveness
+Full mobile optimization
+
+Responsive animations scale for mobile performance
+
+Auth cards stack vertically on small screens with consistent margins
+
+Sticky top navbar for theme toggle on mobile
+
+🛠 Implementation Notes (Frontend-Only)
+Use Local State Only: no API calls needed
+
+Handle success and error with fake loading states
+
+Routing: /login, /signup, /forgot-password
+
+Preferred Stack: React + Tailwind CSS with theme context (e.g. using Tailwind's dark class and toggling via className on <html>)
+
+✨ Optional Enhancements
+Add “AI Fact of the Day” that rotates between quotes on the side
+
+Light/dark mode preference saved via localStorage
+
+Theme toggle uses floating toggle switch or animated sun/moon icon
+
+Inputs shake gently on validation error for feedback
