@@ -1,0 +1,115 @@
+<svg width="1200" height="800" viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="grad1" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
+      <stop offset="0%" stop-color="#00C8FF" stop-opacity="0.1"/>
+      <stop offset="100%" stop-color="#0F172A" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="grad2" cx="20%" cy="30%" r="70%" fx="20%" fy="30%">
+      <stop offset="0%" stop-color="#7B42F6" stop-opacity="0.1"/>
+      <stop offset="100%" stop-color="#0F172A" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="dot-glow" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
+      <stop offset="0%" stop-color="#00C8FF" stop-opacity="0.7"/>
+      <stop offset="100%" stop-color="#00C8FF" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  
+  <!-- Background gradients -->
+  <rect width="1200" height="800" fill="#0F172A" />
+  <rect width="1200" height="800" fill="url(#grad1)" />
+  <rect width="1200" height="800" fill="url(#grad2)" />
+  
+  <!-- Neural mesh paths - Main connections -->
+  <g stroke-opacity="0.15" stroke-width="1" stroke="#00C8FF">
+    <!-- Generate random neural path connections -->
+    <path d="M100,100 C200,200 300,150 400,300 S500,400 600,350 S800,200 900,500" />
+    <path d="M200,700 C300,600 400,650 500,500 S700,300 800,400 S900,600 1000,300" />
+    <path d="M300,200 C400,300 500,250 600,400 S700,500 800,450 S900,300 1000,600" />
+    <path d="M100,400 C200,500 300,450 400,600 S500,700 600,650 S800,500 900,200" />
+    <path d="M200,300 C300,400 400,350 500,500 S600,600 700,550 S800,400 900,700" />
+    <path d="M150,500 C250,600 350,550 450,700 S550,800 650,750 S850,600 950,300" />
+    <path d="M250,200 C350,300 450,250 550,400 S650,500 750,450 S850,300 950,600" />
+    <path d="M50,600 C150,700 250,650 350,800 S450,900 550,850 S750,700 850,400" />
+  </g>
+  
+  <!-- Neural nodes (small dots) -->
+  <g fill="#00C8FF" fill-opacity="0.6">
+    <!-- Row 1 -->
+    <circle cx="100" cy="100" r="2" />
+    <circle cx="300" cy="150" r="2" />
+    <circle cx="500" cy="200" r="2" />
+    <circle cx="700" cy="120" r="2" />
+    <circle cx="900" cy="180" r="2" />
+    <circle cx="1100" cy="140" r="2" />
+    
+    <!-- Row 2 -->
+    <circle cx="200" cy="250" r="2" />
+    <circle cx="400" cy="220" r="2" />
+    <circle cx="600" cy="270" r="2" />
+    <circle cx="800" cy="230" r="2" />
+    <circle cx="1000" cy="260" r="2" />
+    
+    <!-- Row 3 -->
+    <circle cx="150" cy="350" r="2" />
+    <circle cx="350" cy="380" r="2" />
+    <circle cx="550" cy="340" r="2" />
+    <circle cx="750" cy="390" r="2" />
+    <circle cx="950" cy="360" r="2" />
+    <circle cx="1150" cy="370" r="2" />
+    
+    <!-- Row 4 -->
+    <circle cx="100" cy="450" r="2" />
+    <circle cx="300" cy="470" r="2" />
+    <circle cx="500" cy="430" r="2" />
+    <circle cx="700" cy="460" r="2" />
+    <circle cx="900" cy="440" r="2" />
+    <circle cx="1100" cy="480" r="2" />
+    
+    <!-- Row 5 -->
+    <circle cx="200" cy="550" r="2" />
+    <circle cx="400" cy="520" r="2" />
+    <circle cx="600" cy="570" r="2" />
+    <circle cx="800" cy="530" r="2" />
+    <circle cx="1000" cy="560" r="2" />
+    
+    <!-- Row 6 -->
+    <circle cx="150" cy="650" r="2" />
+    <circle cx="350" cy="680" r="2" />
+    <circle cx="550" cy="640" r="2" />
+    <circle cx="750" cy="690" r="2" />
+    <circle cx="950" cy="660" r="2" />
+    <circle cx="1150" cy="670" r="2" />
+    
+    <!-- Row 7 -->
+    <circle cx="100" cy="750" r="2" />
+    <circle cx="300" cy="720" r="2" />
+    <circle cx="500" cy="770" r="2" />
+    <circle cx="700" cy="730" r="2" />
+    <circle cx="900" cy="760" r="2" />
+    <circle cx="1100" cy="740" r="2" />
+  </g>
+  
+  <!-- Highlighted neural nodes (larger dots with glow) -->
+  <g>
+    <circle cx="300" cy="200" r="4" fill="#00C8FF" />
+    <circle cx="300" cy="200" r="10" fill="url(#dot-glow)" />
+    
+    <circle cx="600" cy="350" r="4" fill="#00C8FF" />
+    <circle cx="600" cy="350" r="10" fill="url(#dot-glow)" />
+    
+    <circle cx="900" cy="250" r="4" fill="#00C8FF" />
+    <circle cx="900" cy="250" r="10" fill="url(#dot-glow)" />
+    
+    <circle cx="400" cy="500" r="4" fill="#00C8FF" />
+    <circle cx="400" cy="500" r="10" fill="url(#dot-glow)" />
+    
+    <circle cx="750" cy="600" r="4" fill="#00C8FF" />
+    <circle cx="750" cy="600" r="10" fill="url(#dot-glow)" />
+    
+    <circle cx="250" cy="650" r="4" fill="#7B42F6" />
+    <circle cx="250" cy="650" r="10" fill="url(#dot-glow)" />
+    
+    <circle cx="1000" cy="450" r="4" fill="#7B42F6" />
+    <circle cx="1000" cy="450" r="10" fill="url(#dot-glow)" />
+  </g>
+</svg>
