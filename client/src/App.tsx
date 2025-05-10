@@ -32,6 +32,7 @@ function Router() {
       <Route path="/courses/:courseId" component={CourseDetail} />
       <Route path="/checkout/:courseId" component={Checkout} />
       <Route path="/course/:courseId/success" component={CourseSuccess} />
+      <Route path="/course-success" component={CourseSuccess} />
       <Route path="/lesson/:courseId/:moduleId/:lessonId" component={Lesson} />
       
       {/* Fallback Route */}

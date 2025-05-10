@@ -6,14 +6,13 @@ import { CheckCircle, ArrowRight, Calendar } from "lucide-react";
 import confetti from "canvas-confetti";
 
 export default function CourseSuccess() {
-  const [match, params] = useRoute("/course/:courseId/success");
-  const courseId = params?.courseId;
+  const [match] = useRoute("/course-success");
+  const params = new URLSearchParams(window.location.search);
+  const courseId = params.get('courseId');
+  const planType = params.get('plan') || 'one-time';
   const course = courseId ? getCourseById(courseId) : undefined;
   
   const [isConfettiShown, setIsConfettiShown] = useState(false);
-
-  const urlParams = new URLSearchParams(window.location.search);
-  const planType = urlParams.get('plan') || 'one-time';
   
   // Launch confetti animation
   useEffect(() => {

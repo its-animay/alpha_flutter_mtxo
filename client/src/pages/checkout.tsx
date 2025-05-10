@@ -45,7 +45,9 @@ export default function Checkout() {
   const planType = urlParams.get('plan') || 'one-time';
   
   // Calculate price based on the selected plan
-  const price = course && (() => {
+  const calculatePrice = (course: any, planType: string): number => {
+    if (!course) return 0;
+    
     if (planType === 'monthly') {
       return course.enrollmentOptions.subscription.monthly;
     } else if (planType === 'yearly') {
@@ -53,7 +55,9 @@ export default function Checkout() {
     } else {
       return course.enrollmentOptions.oneTime.discountedPrice || course.enrollmentOptions.oneTime.price;
     }
-  })();
+  };
+  
+  const price = calculatePrice(course, planType as string);
   
   useEffect(() => {
     if (!course) {
@@ -67,22 +71,27 @@ export default function Checkout() {
       return;
     }
     
-    // Uncomment when we have the backend API
-    /*
     const fetchPaymentIntent = async () => {
       try {
+        setLoading(true);
         const response = await apiRequest('POST', '/api/create-payment-intent', {
           courseId: course.id,
-          amount: price * 100, // Convert to cents
+          amount: Math.round(price * 100), // Convert to cents and ensure it's an integer
           planType
         });
         const data = await response.json();
+        
+        if (data.error) {
+          throw new Error(data.error);
+        }
+        
         setClientSecret(data.clientSecret);
-      } catch (err) {
+      } catch (err: any) {
+        console.error('Payment intent error:', err);
         setError('Failed to initialize payment. Please try again later.');
         toast({
           title: 'Payment Error',
-          description: 'Failed to initialize payment. Please try again later.',
+          description: err.message || 'Failed to initialize payment. Please try again later.',
           variant: 'destructive'
         });
       } finally {
@@ -91,16 +100,10 @@ export default function Checkout() {
     };
     
     fetchPaymentIntent();
-    */
     
-    // For now, let's simulate a delay and use a dummy client secret
-    const timer = setTimeout(() => {
-      // In a real implementation, this would be the actual client secret from Stripe
-      setClientSecret('dummy_client_secret_' + Date.now());
-      setLoading(false);
-    }, 1500);
-    
-    return () => clearTimeout(timer);
+    return () => {
+      // Cleanup if needed
+    };
   }, [course, price, planType, navigate, toast]);
   
   if (!course) return null;
@@ -262,25 +265,31 @@ function CheckoutForm({ courseId, planType }: CheckoutFormProps) {
     setError(null);
     
     try {
-      // In a real implementation, we would confirm the payment with Stripe
-      /*
+      // Get user input for billing info
+      const firstName = (document.getElementById('firstName') as HTMLInputElement).value;
+      const lastName = (document.getElementById('lastName') as HTMLInputElement).value;
+      const email = (document.getElementById('email') as HTMLInputElement).value;
+      
+      // Confirm the payment with Stripe
       const { error } = await stripe.confirmPayment({
         elements,
         confirmParams: {
-          return_url: window.location.origin + `/course/${courseId}/success?plan=${planType}`,
+          return_url: window.location.origin + `/course-success?courseId=${courseId}&plan=${planType}`,
+          payment_method_data: {
+            billing_details: {
+              name: `${firstName} ${lastName}`,
+              email: email,
+            },
+          },
         },
       });
       
       if (error) {
-        throw new Error(error.message);
+        throw new Error(error.message || 'Payment failed. Please try again.');
       }
-      */
       
-      // For now, let's simulate a successful payment
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      // Simulate successful payment
-      navigate(`/course/${courseId}/success?plan=${planType}`);
+      // The page will redirect automatically on successful payment
+      // Since we've set the return_url above, we won't reach this point on success
       
     } catch (err: any) {
       setError(err.message || 'Payment failed. Please try again.');
