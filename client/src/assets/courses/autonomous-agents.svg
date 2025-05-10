@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="600" height="400" viewBox="0 0 600 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="600" height="400" fill="#1A1F2B"/>
+  
+  <!-- Background Grid -->
+  <path d="M0 80H600" stroke="#2A3349" stroke-width="1"/>
+  <path d="M0 160H600" stroke="#2A3349" stroke-width="1"/>
+  <path d="M0 240H600" stroke="#2A3349" stroke-width="1"/>
+  <path d="M0 320H600" stroke="#2A3349" stroke-width="1"/>
+  <path d="M120 0V400" stroke="#2A3349" stroke-width="1"/>
+  <path d="M240 0V400" stroke="#2A3349" stroke-width="1"/>
+  <path d="M360 0V400" stroke="#2A3349" stroke-width="1"/>
+  <path d="M480 0V400" stroke="#2A3349" stroke-width="1"/>
+  
+  <!-- Central Agent Hub -->
+  <circle cx="300" cy="200" r="80" fill="#1E293B" stroke="#00C8FF" stroke-width="2"/>
+  <circle cx="300" cy="200" r="70" stroke="#7B42F6" stroke-opacity="0.5" stroke-width="1" stroke-dasharray="4 4"/>
+  <circle cx="300" cy="200" r="60" stroke="#7B42F6" stroke-opacity="0.5" stroke-width="1" stroke-dasharray="4 4"/>
+  
+  <!-- Agent Core -->
+  <circle cx="300" cy="200" r="30" fill="#00C8FF" fill-opacity="0.2" stroke="#00C8FF" stroke-width="2"/>
+  <text x="300" y="205" text-anchor="middle" fill="white" font-family="sans-serif" font-size="14" font-weight="bold">AGENT</text>
+  
+  <!-- Autonomous Systems -->
+  <!-- Planning System -->
+  <circle cx="220" cy="120" r="25" fill="#1E293B" stroke="#7B42F6" stroke-width="2"/>
+  <text x="220" y="125" text-anchor="middle" fill="white" font-family="sans-serif" font-size="10">PLANNING</text>
+  
+  <!-- Perception System -->
+  <circle cx="380" cy="120" r="25" fill="#1E293B" stroke="#7B42F6" stroke-width="2"/>
+  <text x="380" y="125" text-anchor="middle" fill="white" font-family="sans-serif" font-size="10">PERCEPTION</text>
+  
+  <!-- Memory System -->
+  <circle cx="220" cy="280" r="25" fill="#1E293B" stroke="#7B42F6" stroke-width="2"/>
+  <text x="220" y="285" text-anchor="middle" fill="white" font-family="sans-serif" font-size="10">MEMORY</text>
+  
+  <!-- Action System -->
+  <circle cx="380" cy="280" r="25" fill="#1E293B" stroke="#7B42F6" stroke-width="2"/>
+  <text x="380" y="285" text-anchor="middle" fill="white" font-family="sans-serif" font-size="10">ACTION</text>
+  
+  <!-- Connecting Lines -->
+  <path d="M300 170L220 145" stroke="#00C8FF" stroke-width="1.5"/>
+  <path d="M300 170L380 145" stroke="#00C8FF" stroke-width="1.5"/>
+  <path d="M300 230L220 255" stroke="#00C8FF" stroke-width="1.5"/>
+  <path d="M300 230L380 255" stroke="#00C8FF" stroke-width="1.5"/>
+  
+  <!-- External Tools -->
+  <rect x="120" cy="190" width="40" height="20" rx="4" fill="#1E293B" stroke="#00C8FF" stroke-width="1.5"/>
+  <text x="140" y="205" text-anchor="middle" fill="white" font-family="sans-serif" font-size="10">API</text>
+  
+  <rect x="440" cy="190" width="40" height="20" rx="4" fill="#1E293B" stroke="#00C8FF" stroke-width="1.5"/>
+  <text x="460" y="205" text-anchor="middle" fill="white" font-family="sans-serif" font-size="10">WEB</text>
+  
+  <path d="M220 160L220 190" stroke="#7B42F6" stroke-width="1.5" stroke-dasharray="2 2"/>
+  <rect x="200" cy="190" width="40" height="20" rx="4" fill="#1E293B" stroke="#7B42F6" stroke-width="1.5"/>
+  <text x="220" y="205" text-anchor="middle" fill="white" font-family="sans-serif" font-size="10">LLM</text>
+  
+  <path d="M380 160L380 190" stroke="#7B42F6" stroke-width="1.5" stroke-dasharray="2 2"/>
+  <rect x="360" cy="190" width="40" height="20" rx="4" fill="#1E293B" stroke="#7B42F6" stroke-width="1.5"/>
+  <text x="380" y="205" text-anchor="middle" fill="white" font-family="sans-serif" font-size="10">TOOLS</text>
+  
+  <!-- Connections to External Systems -->
+  <path d="M160 200H220" stroke="#00C8FF" stroke-width="1.5" stroke-dasharray="2 2"/>
+  <path d="M380 200H440" stroke="#00C8FF" stroke-width="1.5" stroke-dasharray="2 2"/>
+  
+  <!-- Title -->
+  <text x="50" y="360" fill="#FFFFFF" font-family="sans-serif" font-size="24" font-weight="bold">Building Autonomous Agents</text>
+  
+  <!-- Decorative Elements -->
+  <circle cx="100" cy="100" r="15" fill="#00C8FF" fill-opacity="0.2"/>
+  <circle cx="500" cy="100" r="12" fill="#7B42F6" fill-opacity="0.2"/>
+  <circle cx="500" cy="300" r="18" fill="#00C8FF" fill-opacity="0.2"/>
+  <circle cx="100" cy="300" r="10" fill="#7B42F6" fill-opacity="0.2"/>
+</svg>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="600" height="400" viewBox="0 0 600 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="600" height="400" fill="#1A1F2B"/>
+  <g opacity="0.8">
+    <circle cx="300" cy="200" r="120" fill="url(#paint0_radial)"/>
+    <circle cx="300" cy="200" r="80" stroke="#00C8FF" stroke-width="2" stroke-dasharray="4 4"/>
+    <circle cx="300" cy="200" r="50" stroke="#7B42F6" stroke-width="2"/>
+  </g>
+  
+  <!-- Neural Network Nodes -->
+  <circle cx="250" cy="150" r="10" fill="#00C8FF"/>
+  <circle cx="350" cy="150" r="10" fill="#00C8FF"/>
+  <circle cx="300" cy="120" r="10" fill="#00C8FF"/>
+  <circle cx="275" cy="200" r="10" fill="#7B42F6"/>
+  <circle cx="325" cy="200" r="10" fill="#7B42F6"/>
+  <circle cx="250" cy="250" r="10" fill="#00C8FF"/>
+  <circle cx="350" cy="250" r="10" fill="#00C8FF"/>
+  <circle cx="300" cy="280" r="10" fill="#00C8FF"/>
+  
+  <!-- Neural Network Connections -->
+  <line x1="250" y1="150" x2="275" y2="200" stroke="#00C8FF" stroke-width="2"/>
+  <line x1="300" y1="120" x2="275" y2="200" stroke="#00C8FF" stroke-width="2"/>
+  <line x1="350" y1="150" x2="325" y2="200" stroke="#00C8FF" stroke-width="2"/>
+  <line x1="300" y1="120" x2="325" y2="200" stroke="#00C8FF" stroke-width="2"/>
+  <line x1="275" y1="200" x2="325" y2="200" stroke="#7B42F6" stroke-width="2"/>
+  <line x1="275" y1="200" x2="250" y2="250" stroke="#00C8FF" stroke-width="2"/>
+  <line x1="325" y1="200" x2="350" y2="250" stroke="#00C8FF" stroke-width="2"/>
+  <line x1="275" y1="200" x2="300" y2="280" stroke="#00C8FF" stroke-width="2"/>
+  <line x1="325" y1="200" x2="300" y2="280" stroke="#00C8FF" stroke-width="2"/>
+  
+  <!-- Background Grid -->
+  <path d="M0 80H600" stroke="#2A3349" stroke-width="1"/>
+  <path d="M0 160H600" stroke="#2A3349" stroke-width="1"/>
+  <path d="M0 240H600" stroke="#2A3349" stroke-width="1"/>
+  <path d="M0 320H600" stroke="#2A3349" stroke-width="1"/>
+  <path d="M120 0V400" stroke="#2A3349" stroke-width="1"/>
+  <path d="M240 0V400" stroke="#2A3349" stroke-width="1"/>
+  <path d="M360 0V400" stroke="#2A3349" stroke-width="1"/>
+  <path d="M480 0V400" stroke="#2A3349" stroke-width="1"/>
+  
+  <!-- Title -->
+  <text x="50" y="360" fill="#FFFFFF" font-family="sans-serif" font-size="24" font-weight="bold">Agentic LLMs Bootcamp</text>
+  
+  <!-- Gradients -->
+  <defs>
+    <radialGradient id="paint0_radial" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(300 200) rotate(90) scale(120)">
+      <stop stop-color="#00C8FF" stop-opacity="0.2"/>
+      <stop offset="1" stop-color="#7B42F6" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+</svg>
