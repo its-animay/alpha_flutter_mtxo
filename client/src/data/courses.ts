@@ -89,11 +89,11 @@ export const courses: Course[] = [
     title: "Agentic LLMs Bootcamp",
     subtitle: "Create intelligent AI agents that can reason, plan and execute complex tasks",
     description: "Dive into the world of agentic AI systems and learn how to build autonomous agents powered by large language models. This course covers the theory and practical implementation of autonomous AI systems that can reason, plan, and execute complex tasks without human intervention.",
-    thumbnail: "/courses/agentic-llms.webp",
+    thumbnail: "@assets/courses/agentic-llms.svg",
     instructor: {
       id: "1",
       name: "Dr. Emma Chen",
-      avatar: "/instructors/emma-chen.webp",
+      avatar: "@assets/instructors/placeholder.svg",
       title: "AI Research Scientist",
       bio: "AI research scientist specializing in multi-agent systems and autonomous AI. Previously worked at OpenAI and DeepMind."
     },
@@ -247,11 +247,11 @@ export const courses: Course[] = [
     title: "MLOps with FastAPI",
     subtitle: "Build, deploy and scale ML models with modern MLOps practices",
     description: "Learn how to build production-ready machine learning systems using FastAPI. This comprehensive course covers the entire MLOps lifecycle, from model development to deployment, monitoring, and maintenance.",
-    thumbnail: "/courses/mlops-fastapi.webp",
+    thumbnail: "@assets/courses/mlops-fastapi.svg",
     instructor: {
       id: "2",
       name: "Miguel Ramirez",
-      avatar: "/instructors/miguel-ramirez.webp",
+      avatar: "@assets/instructors/placeholder.svg",
       title: "MLOps Engineer",
       bio: "Senior MLOps engineer with 10+ years of experience deploying ML systems at scale. Author of 'Production ML Systems'."
     },
@@ -406,11 +406,11 @@ export const courses: Course[] = [
     title: "GenAI Prompt Engineering Lab",
     subtitle: "Master the art and science of effective prompt design for generative AI",
     description: "Become an expert in prompt engineering for generative AI models. This course covers advanced techniques for crafting effective prompts that generate high-quality outputs for various applications, from content creation to code generation.",
-    thumbnail: "/courses/genai-prompt-engineering.webp",
+    thumbnail: "@assets/courses/genai-prompt-engineering.svg",
     instructor: {
       id: "3",
       name: "Sophia Williams",
-      avatar: "/instructors/sophia-williams.webp",
+      avatar: "@assets/instructors/placeholder.svg",
       title: "AI Content Strategist",
       bio: "AI content strategist and prompt engineering expert. Has trained teams at Fortune 500 companies on effective AI utilization."
     },
@@ -564,11 +564,11 @@ export const courses: Course[] = [
     title: "Building Autonomous Agents",
     subtitle: "Create and deploy intelligent autonomous agents for real-world tasks",
     description: "Learn how to build sophisticated autonomous agents that can interact with the world, make decisions, and accomplish complex tasks without human intervention. This course covers the latest techniques and frameworks for developing agentic AI systems.",
-    thumbnail: "/courses/autonomous-agents.webp",
+    thumbnail: "@assets/courses/autonomous-agents.svg",
     instructor: {
       id: "4",
       name: "Dr. James Liu",
-      avatar: "/instructors/james-liu.webp",
+      avatar: "@assets/instructors/placeholder.svg",
       title: "AI Systems Architect",
       bio: "AI systems architect with expertise in multi-agent systems and autonomous AI. Previously led AI teams at major tech companies."
     },
