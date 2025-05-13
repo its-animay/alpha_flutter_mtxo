@@ -6,6 +6,7 @@ import {
   type CourseModule, 
   type CourseLessonItem 
 } from "@/data/courses";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
@@ -154,7 +155,7 @@ export default function LessonPage() {
             <span className="hidden sm:inline-block font-medium">Back to Course</span>
           </Link>
           
-          <div className="ml-auto flex items-center space-x-2">
+          <div className="ml-auto flex items-center space-x-3">
             <Button variant="ghost" size="sm" className="hidden sm:flex" asChild>
               <Link href="/dashboard">
                 My Dashboard
@@ -163,6 +164,7 @@ export default function LessonPage() {
             <Button variant="ghost" size="sm" className="hidden sm:flex">
               Need Help?
             </Button>
+            <ThemeToggle />
           </div>
         </div>
       </header>
@@ -418,7 +420,7 @@ export default function LessonPage() {
                     
                     <p>Let's look at a practical example of how these concepts are applied in a real-world scenario.</p>
                     
-                    <pre className="bg-muted p-4 rounded-md overflow-x-auto"><code>{`# Example Python code
+                    <pre className="dark:bg-gray-900 dark:border dark:border-gray-800 bg-muted p-4 rounded-md overflow-x-auto shadow-md"><code className="dark:text-gray-300">{`# Example Python code
 import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
 

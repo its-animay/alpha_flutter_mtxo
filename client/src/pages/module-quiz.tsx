@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { ModuleQuiz, QuizQuestion } from "@/components/quiz/module-quiz";
 import { getCourseById } from "@/data/courses";
 import { ParticleBackground } from "@/components/particle-background";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft } from "lucide-react";
 import { Link } from "wouter";
@@ -110,14 +111,19 @@ export default function ModuleQuizPage() {
           <div className="flex justify-between items-center w-full">
             <h1 className="text-3xl font-bold">{course.title}</h1>
             
-            {/* Toggle for instructor view */}
-            <Button 
-              variant="outline" 
-              onClick={() => setIsInstructorView(!isInstructorView)}
-              className="text-xs"
-            >
-              {isInstructorView ? "Student View" : "Instructor View"}
-            </Button>
+            <div className="flex items-center gap-3">
+              {/* Theme toggle */}
+              <ThemeToggle />
+              
+              {/* Toggle for instructor view */}
+              <Button 
+                variant="outline" 
+                onClick={() => setIsInstructorView(!isInstructorView)}
+                className="text-xs md:text-sm"
+              >
+                {isInstructorView ? "Student View" : "Instructor View"}
+              </Button>
+            </div>
           </div>
         </div>
         
