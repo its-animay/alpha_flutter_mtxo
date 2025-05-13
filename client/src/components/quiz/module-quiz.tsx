@@ -59,7 +59,7 @@ export function ModuleQuiz({ moduleTitle, questions, isInstructorView = false }:
   };
 
   return (
-    <div className="mx-auto w-full max-w-[600px] px-4 sm:px-6">
+    <div className="mx-auto w-full px-4 sm:px-6 lg:max-w-[900px]">
       <div className="mb-6">
         <h2 className="text-xl font-bold mb-6">{moduleTitle}: Quiz</h2>
         <p className="text-muted-foreground">
@@ -86,7 +86,7 @@ export function ModuleQuiz({ moduleTitle, questions, isInstructorView = false }:
         </CardHeader>
         <CardContent className="px-6 pb-6">
           <ScrollArea className="pr-4 -mr-4">
-            <div className="space-y-6">
+            <div className="space-y-8 lg:space-y-10">
               {questions.map((question, index) => (
                 <div 
                   key={question.id} 
@@ -96,11 +96,11 @@ export function ModuleQuiz({ moduleTitle, questions, isInstructorView = false }:
                     theme === "dark" ? "border-white/20" : "border-black/10"
                   )}
                 >
-                  <div className="text-base font-medium mb-4">
-                    {index + 1}. {question.stem}
+                  <div className="text-base lg:text-lg font-medium mb-4 lg:mb-5">
+                    <span className="lg:text-xl lg:font-semibold text-primary">{index + 1}.</span> {question.stem}
                   </div>
                   
-                  <div className="space-y-2">
+                  <div className="space-y-2 lg:space-y-3 lg:pt-2">
                     {question.options.map((option) => {
                       const isSelected = selectedAnswers[question.id] === option.id;
                       const isCorrect = showResults && option.id === question.correctAnswer;
@@ -110,7 +110,7 @@ export function ModuleQuiz({ moduleTitle, questions, isInstructorView = false }:
                         <div 
                           key={option.id}
                           className={cn(
-                            "flex items-center p-3 rounded-md transition-all duration-200",
+                            "flex items-center p-3 lg:p-4 rounded-md transition-all duration-200",
                             theme === "dark" 
                               ? isSelected 
                                 ? "bg-primary/20 border border-primary/40 shadow-[0_0_10px_rgba(0,200,255,0.15)]" 
@@ -149,8 +149,8 @@ export function ModuleQuiz({ moduleTitle, questions, isInstructorView = false }:
                             {isIncorrect && <div className="w-2 h-2 bg-white rounded-full" />}
                           </div>
                           
-                          <div className="ml-3 flex-grow text-sm">
-                            <span className="font-medium mr-1">{option.id}.</span> {option.text}
+                          <div className="ml-3 flex-grow text-sm lg:text-base">
+                            <span className="font-medium mr-1 text-primary">{option.id}.</span> {option.text}
                           </div>
                         </div>
                       )
