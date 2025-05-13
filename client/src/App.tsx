@@ -12,6 +12,7 @@ import CourseDetail from "@/pages/course-detail";
 import Checkout from "@/pages/checkout";
 import CourseSuccess from "@/pages/course-success";
 import Lesson from "@/pages/lesson";
+import ModuleQuiz from "@/pages/module-quiz";
 import Dashboard from "@/pages/dashboard";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { ParticleBackground } from "@/components/particle-background";
@@ -34,6 +35,7 @@ function Router() {
       <Route path="/course/:courseId/success" component={CourseSuccess} />
       <Route path="/course-success" component={CourseSuccess} />
       <Route path="/lesson/:courseId/:moduleId/:lessonId" component={Lesson} />
+      <Route path="/quiz/:courseId/:moduleId" component={ModuleQuiz} />
       
       {/* Fallback Route */}
       <Route component={NotFound} />
@@ -50,9 +52,10 @@ function AppLayout() {
   const isAuthPage = isLoginPage || isRootPage || isSignupPage || isForgotPasswordPage;
   
   const [isCourseLesson] = useRoute("/lesson/:courseId/:moduleId/:lessonId");
+  const [isModuleQuiz] = useRoute("/quiz/:courseId/:moduleId");
   
-  // Render a minimal layout for lesson pages (no decorative elements, full-screen)
-  if (isCourseLesson) {
+  // Render a minimal layout for lesson pages and quizzes (no decorative elements, full-screen)
+  if (isCourseLesson || isModuleQuiz) {
     return (
       <main className="min-h-screen">
         <Router />
