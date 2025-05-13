@@ -467,6 +467,21 @@ print(generated_text)`}</code></pre>
                       </div>
                     </div>
                     
+                    {/* Quiz Button */}
+                    <div className="mt-8 mb-6">
+                      <Button 
+                        asChild
+                        className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white py-6 rounded-md shadow-lg hover:shadow-xl transition-all duration-300"
+                      >
+                        <Link href={`/quiz/${courseId}/${moduleId}`}>
+                          <div className="flex flex-col items-center justify-center py-2">
+                            <div className="text-lg font-semibold mb-1">Ready to test your knowledge?</div>
+                            <div className="text-sm opacity-90">Take the module quiz to check your understanding</div>
+                          </div>
+                        </Link>
+                      </Button>
+                    </div>
+                    
                     {/* Lesson navigation */}
                     <div className="flex justify-between items-center border-t pt-6 mt-8">
                       {prevLesson ? (
