@@ -19,7 +19,7 @@ import Helpdesk from "@/pages/helpdesk";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { ParticleBackground } from "@/components/particle-background";
 import { FactCard } from "@/components/fact-card";
-import { FuturisticHeader } from "@/components/futuristic-header";
+import { AnimatedHeader } from "@/components/animated-header";
 
 function Router() {
   return (
@@ -92,7 +92,7 @@ function AppLayout() {
     <div className="relative min-h-screen w-full flex flex-col">
       <ParticleBackground />
       
-      <FuturisticHeader />
+      <AnimatedHeader />
       
       <main className="flex-grow">
         <Router />
