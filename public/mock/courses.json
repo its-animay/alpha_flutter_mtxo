@@ -1,0 +1,201 @@
+[
+  {
+    "id": "course1",
+    "title": "Generative AI Foundations",
+    "subtitle": "Understanding the Core of Modern AI Systems",
+    "description": "Explore the fundamentals of generative AI models, their architecture, and applications in modern technology.",
+    "thumbnail": "https://placehold.co/600x400/1a202c/e2e8f0?text=GenAI+Foundations",
+    "instructor": {
+      "id": "instructor1",
+      "name": "Dr. Sarah Chen",
+      "avatar": "https://placehold.co/400x400/1a202c/e2e8f0?text=SC",
+      "title": "Lead AI Researcher",
+      "bio": "Dr. Chen has over 10 years of experience in AI research and has published numerous papers on generative models."
+    },
+    "skillLevel": "Beginner",
+    "tags": ["GenAI", "Python", "MLOps"],
+    "rating": 4.8,
+    "reviewCount": 245,
+    "studentsEnrolled": 1289,
+    "price": 59.99,
+    "priceType": "Paid",
+    "duration": "Medium",
+    "totalLessons": 24,
+    "totalDuration": "12h",
+    "whatYoullLearn": [
+      "Core principles of generative AI",
+      "How to implement basic generative models using Python",
+      "Practical applications across different industries",
+      "Ethical considerations in AI development"
+    ],
+    "prerequisites": [
+      "Basic programming knowledge",
+      "Familiarity with Python syntax",
+      "Understanding of basic mathematical concepts"
+    ],
+    "modules": [
+      {
+        "id": "m1",
+        "title": "Introduction to Generative AI",
+        "lessons": [
+          {
+            "id": "l1",
+            "title": "What is Generative AI?",
+            "duration": "25min",
+            "isFree": true,
+            "description": "An overview of generative AI and its impact on technology."
+          },
+          {
+            "id": "l2",
+            "title": "Historical Development of AI",
+            "duration": "30min",
+            "isFree": true,
+            "description": "Trace the evolution of AI from its early days to modern generative models."
+          },
+          {
+            "id": "l3",
+            "title": "How Generative Models Work",
+            "duration": "40min",
+            "isFree": false,
+            "description": "Deep dive into the technical aspects of generative models."
+          }
+        ],
+        "isFree": false,
+        "description": "An introduction to the world of generative AI and its foundational concepts.",
+        "duration": "95min"
+      },
+      {
+        "id": "m2",
+        "title": "Building Your First Generative Model",
+        "lessons": [
+          {
+            "id": "l1",
+            "title": "Setting Up Your Environment",
+            "duration": "20min",
+            "isFree": false,
+            "description": "Configure your Python environment for AI development."
+          },
+          {
+            "id": "l2",
+            "title": "Implementing a Basic Model",
+            "duration": "45min",
+            "isFree": false,
+            "description": "Step-by-step implementation of a simple generative model."
+          }
+        ],
+        "isFree": false,
+        "description": "Hands-on implementation of generative models using Python.",
+        "duration": "65min"
+      }
+    ],
+    "reviews": [
+      {
+        "id": "r1",
+        "userName": "Alex Johnson",
+        "userAvatar": "https://placehold.co/400x400/1a202c/e2e8f0?text=AJ",
+        "rating": 5,
+        "comment": "Excellent course that breaks down complex concepts into digestible segments. Would highly recommend!",
+        "date": "2025-02-15"
+      },
+      {
+        "id": "r2",
+        "userName": "Maria Rodriguez",
+        "userAvatar": "https://placehold.co/400x400/1a202c/e2e8f0?text=MR",
+        "rating": 4,
+        "comment": "Great content, though some sections could use more practical examples.",
+        "date": "2025-01-22"
+      }
+    ],
+    "enrollmentOptions": {
+      "freeTrial": true,
+      "oneTime": {
+        "price": 59.99,
+        "discountedPrice": 49.99
+      },
+      "subscription": {
+        "monthly": 12.99,
+        "yearly": 119.88
+      }
+    }
+  },
+  {
+    "id": "course2",
+    "title": "Advanced LLM Applications",
+    "subtitle": "Building Production-Ready AI Systems",
+    "description": "Learn to create and deploy sophisticated applications leveraging large language models.",
+    "thumbnail": "https://placehold.co/600x400/1a202c/e2e8f0?text=Advanced+LLM",
+    "instructor": {
+      "id": "instructor2",
+      "name": "Prof. Michael Torres",
+      "avatar": "https://placehold.co/400x400/1a202c/e2e8f0?text=MT",
+      "title": "AI Systems Architect",
+      "bio": "Prof. Torres specializes in designing scalable AI systems and has worked with major tech companies."
+    },
+    "skillLevel": "Advanced",
+    "tags": ["LLMs", "Python", "MLOps", "NLP"],
+    "rating": 4.9,
+    "reviewCount": 112,
+    "studentsEnrolled": 734,
+    "price": 79.99,
+    "priceType": "Paid",
+    "duration": "Long",
+    "totalLessons": 32,
+    "totalDuration": "18h",
+    "whatYoullLearn": [
+      "Design patterns for complex LLM applications",
+      "Performance optimization techniques",
+      "Security considerations for AI systems",
+      "Production deployment strategies"
+    ],
+    "prerequisites": [
+      "Strong programming skills",
+      "Basic understanding of machine learning",
+      "Experience with API integrations"
+    ],
+    "modules": [
+      {
+        "id": "m1",
+        "title": "Architecture of LLM Systems",
+        "lessons": [
+          {
+            "id": "l1",
+            "title": "Understanding LLM Architectures",
+            "duration": "35min",
+            "isFree": true,
+            "description": "Examine the architectural components of large language models."
+          },
+          {
+            "id": "l2",
+            "title": "System Design for AI Applications",
+            "duration": "40min",
+            "isFree": false,
+            "description": "Learn how to design robust systems around language models."
+          }
+        ],
+        "isFree": false,
+        "description": "Explore the architectural principles behind modern LLM systems.",
+        "duration": "75min"
+      }
+    ],
+    "reviews": [
+      {
+        "id": "r1",
+        "userName": "David Kim",
+        "userAvatar": "https://placehold.co/400x400/1a202c/e2e8f0?text=DK",
+        "rating": 5,
+        "comment": "The depth of content is impressive. I've implemented several techniques from this course in production.",
+        "date": "2025-03-03"
+      }
+    ],
+    "enrollmentOptions": {
+      "freeTrial": false,
+      "oneTime": {
+        "price": 79.99
+      },
+      "subscription": {
+        "monthly": 15.99,
+        "yearly": 159.99
+      }
+    }
+  }
+]

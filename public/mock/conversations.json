@@ -1,0 +1,169 @@
+[
+  {
+    "id": 1,
+    "courseId": "course1",
+    "instructorId": "instructor1",
+    "title": "Help with Generative Models",
+    "createdAt": "2025-04-15T14:30:00.000Z",
+    "lastMessageAt": "2025-05-10T09:15:00.000Z",
+    "status": "active",
+    "participants": [
+      {
+        "id": 1,
+        "userId": 1,
+        "name": "John Doe",
+        "avatar": "https://placehold.co/400x400/1a202c/e2e8f0?text=JD",
+        "role": "student"
+      },
+      {
+        "id": 2,
+        "userId": "instructor1",
+        "name": "Dr. Sarah Chen",
+        "avatar": "https://placehold.co/400x400/1a202c/e2e8f0?text=SC",
+        "role": "instructor"
+      }
+    ],
+    "messages": [
+      {
+        "id": 1,
+        "senderId": 1,
+        "senderName": "John Doe",
+        "senderAvatar": "https://placehold.co/400x400/1a202c/e2e8f0?text=JD",
+        "messageType": "text",
+        "content": "Hello Dr. Chen, I'm having trouble understanding the difference between VAEs and GANs. Could you help clarify?",
+        "timestamp": "2025-04-15T14:30:00.000Z",
+        "isRead": true
+      },
+      {
+        "id": 2,
+        "senderId": "instructor1",
+        "senderName": "Dr. Sarah Chen",
+        "senderAvatar": "https://placehold.co/400x400/1a202c/e2e8f0?text=SC",
+        "messageType": "text",
+        "content": "Hi John! Great question. VAEs and GANs are both generative models but differ in their approach. VAEs learn to encode data into a latent space and then decode it back, optimizing for reconstruction. GANs, on the other hand, have a generator and discriminator that compete against each other. The generator creates fake data, and the discriminator tries to distinguish between real and fake. Let me know if you'd like me to explain further or provide examples!",
+        "timestamp": "2025-04-15T15:45:00.000Z",
+        "isRead": true
+      },
+      {
+        "id": 3,
+        "senderId": 1,
+        "senderName": "John Doe",
+        "senderAvatar": "https://placehold.co/400x400/1a202c/e2e8f0?text=JD",
+        "messageType": "text",
+        "content": "Thanks for the explanation! That makes it clearer. Could you recommend any specific papers or additional resources I should read to better understand these models?",
+        "timestamp": "2025-04-16T10:20:00.000Z",
+        "isRead": true
+      },
+      {
+        "id": 4,
+        "senderId": "instructor1",
+        "senderName": "Dr. Sarah Chen",
+        "senderAvatar": "https://placehold.co/400x400/1a202c/e2e8f0?text=SC",
+        "messageType": "text",
+        "content": "Absolutely! For VAEs, I recommend starting with the original paper by Kingma and Welling (2013). For GANs, check out the paper by Goodfellow et al. (2014). I've also attached a PDF with a comparative analysis that might be helpful.",
+        "timestamp": "2025-04-16T11:30:00.000Z",
+        "isRead": true
+      },
+      {
+        "id": 5,
+        "senderId": "instructor1",
+        "senderName": "Dr. Sarah Chen",
+        "senderAvatar": "https://placehold.co/400x400/1a202c/e2e8f0?text=SC",
+        "messageType": "file",
+        "content": "Comparative Analysis of Generative Models",
+        "timestamp": "2025-04-16T11:32:00.000Z",
+        "isRead": true,
+        "fileUrl": "comparative_analysis.pdf",
+        "fileType": "pdf",
+        "fileName": "Comparative_Analysis_VAE_GAN.pdf"
+      },
+      {
+        "id": 6,
+        "senderId": 1,
+        "senderName": "John Doe",
+        "senderAvatar": "https://placehold.co/400x400/1a202c/e2e8f0?text=JD",
+        "messageType": "text",
+        "content": "I've been trying to implement the code from Module 2 Lesson 2, but I'm getting an error about dimensions not matching. Any ideas what could be wrong?",
+        "timestamp": "2025-05-10T09:15:00.000Z",
+        "isRead": false
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "courseId": "course2",
+    "instructorId": "instructor2",
+    "title": "LLM Deployment Question",
+    "createdAt": "2025-05-01T16:00:00.000Z",
+    "lastMessageAt": "2025-05-09T13:45:00.000Z",
+    "status": "active",
+    "participants": [
+      {
+        "id": 1,
+        "userId": 1,
+        "name": "John Doe",
+        "avatar": "https://placehold.co/400x400/1a202c/e2e8f0?text=JD",
+        "role": "student"
+      },
+      {
+        "id": 2,
+        "userId": "instructor2",
+        "name": "Prof. Michael Torres",
+        "avatar": "https://placehold.co/400x400/1a202c/e2e8f0?text=MT",
+        "role": "instructor"
+      }
+    ],
+    "messages": [
+      {
+        "id": 1,
+        "senderId": 1,
+        "senderName": "John Doe",
+        "senderAvatar": "https://placehold.co/400x400/1a202c/e2e8f0?text=JD",
+        "messageType": "text",
+        "content": "Hello Professor Torres, I'm trying to deploy my LLM application but encountering memory issues. The model seems too large for my current setup. Do you have any recommendations for optimization?",
+        "timestamp": "2025-05-01T16:00:00.000Z",
+        "isRead": true
+      },
+      {
+        "id": 2,
+        "senderId": "instructor2",
+        "senderName": "Prof. Michael Torres",
+        "senderAvatar": "https://placehold.co/400x400/1a202c/e2e8f0?text=MT",
+        "messageType": "text",
+        "content": "Hi John. Memory issues are common with large models. You could try model quantization to reduce the precision of weights, or model pruning to remove less important parameters. You might also consider using model distillation to create a smaller student model that approximates the performance of your larger model. What hardware are you currently using?",
+        "timestamp": "2025-05-02T09:30:00.000Z",
+        "isRead": true
+      },
+      {
+        "id": 3,
+        "senderId": 1,
+        "senderName": "John Doe",
+        "senderAvatar": "https://placehold.co/400x400/1a202c/e2e8f0?text=JD",
+        "messageType": "text",
+        "content": "I'm using a laptop with 16GB RAM and no dedicated GPU. Maybe I should look into cloud solutions?",
+        "timestamp": "2025-05-02T10:15:00.000Z",
+        "isRead": true
+      },
+      {
+        "id": 4,
+        "senderId": "instructor2",
+        "senderName": "Prof. Michael Torres",
+        "senderAvatar": "https://placehold.co/400x400/1a202c/e2e8f0?text=MT",
+        "messageType": "text",
+        "content": "Yes, for larger models, cloud solutions would be more appropriate. Services like AWS SageMaker, Google Vertex AI, or Azure ML offer managed environments for deploying large models. They handle scaling and can provide GPU/TPU acceleration. Would you like me to suggest a specific setup for your use case?",
+        "timestamp": "2025-05-03T14:20:00.000Z",
+        "isRead": true
+      },
+      {
+        "id": 5,
+        "senderId": 1,
+        "senderName": "John Doe",
+        "senderAvatar": "https://placehold.co/400x400/1a202c/e2e8f0?text=JD",
+        "messageType": "text",
+        "content": "That would be very helpful. I'm primarily looking for the most cost-effective solution for a model with about 7B parameters that will serve around 1000 requests per day.",
+        "timestamp": "2025-05-09T13:45:00.000Z",
+        "isRead": false
+      }
+    ]
+  }
+]

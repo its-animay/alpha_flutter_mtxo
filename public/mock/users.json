@@ -1,0 +1,47 @@
+[
+  {
+    "id": 1,
+    "username": "johndoe",
+    "email": "john.doe@example.com",
+    "fullName": "John Doe",
+    "profilePicture": "https://placehold.co/400x400/1a202c/e2e8f0?text=JD",
+    "role": "user",
+    "preferences": {
+      "darkMode": true,
+      "notifications": {
+        "email": true,
+        "push": false
+      }
+    }
+  },
+  {
+    "id": 2,
+    "username": "janedoe",
+    "email": "jane.doe@example.com",
+    "fullName": "Jane Doe",
+    "profilePicture": "https://placehold.co/400x400/1a202c/e2e8f0?text=JD",
+    "role": "user",
+    "preferences": {
+      "darkMode": false,
+      "notifications": {
+        "email": true,
+        "push": true
+      }
+    }
+  },
+  {
+    "id": 3,
+    "username": "admin",
+    "email": "admin@mtxolabs.com",
+    "fullName": "Admin User",
+    "profilePicture": "https://placehold.co/400x400/1a202c/e2e8f0?text=AD",
+    "role": "admin",
+    "preferences": {
+      "darkMode": true,
+      "notifications": {
+        "email": true,
+        "push": true
+      }
+    }
+  }
+]

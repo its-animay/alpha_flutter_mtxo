@@ -1,0 +1,48 @@
+[
+  {
+    "id": 1,
+    "userId": 1,
+    "planType": "monthly",
+    "status": "active",
+    "startDate": "2025-01-01T00:00:00.000Z",
+    "nextBillingDate": "2025-05-01T00:00:00.000Z",
+    "paymentMethod": {
+      "type": "credit_card",
+      "last4": "4242",
+      "expiryMonth": "12",
+      "expiryYear": "2026",
+      "brand": "visa"
+    },
+    "price": 12.99,
+    "features": [
+      "Unlimited course access",
+      "Live sessions",
+      "Instructor Q&A",
+      "Certificate generation"
+    ]
+  },
+  {
+    "id": 2,
+    "userId": 2,
+    "planType": "yearly",
+    "status": "active",
+    "startDate": "2025-02-15T00:00:00.000Z",
+    "nextBillingDate": "2026-02-15T00:00:00.000Z",
+    "paymentMethod": {
+      "type": "credit_card",
+      "last4": "1234",
+      "expiryMonth": "10",
+      "expiryYear": "2027",
+      "brand": "mastercard"
+    },
+    "price": 119.88,
+    "features": [
+      "Unlimited course access",
+      "Live sessions",
+      "Instructor Q&A",
+      "Certificate generation",
+      "Downloadable resources",
+      "Personal learning path"
+    ]
+  }
+]

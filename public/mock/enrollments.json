@@ -1,0 +1,41 @@
+[
+  {
+    "id": 1,
+    "userId": 1,
+    "courseId": "course1",
+    "enrollmentDate": "2025-01-15T10:30:00.000Z",
+    "lastAccessDate": "2025-05-10T14:22:00.000Z",
+    "progress": 35,
+    "currentModule": "m1",
+    "currentLesson": "l3",
+    "completedLessons": ["m1.l1", "m1.l2"],
+    "certificateIssued": false,
+    "status": "active"
+  },
+  {
+    "id": 2,
+    "userId": 1,
+    "courseId": "course2",
+    "enrollmentDate": "2025-03-22T08:15:00.000Z",
+    "lastAccessDate": "2025-05-09T19:45:00.000Z",
+    "progress": 12,
+    "currentModule": "m1",
+    "currentLesson": "l2",
+    "completedLessons": ["m1.l1"],
+    "certificateIssued": false,
+    "status": "active"
+  },
+  {
+    "id": 3,
+    "userId": 2,
+    "courseId": "course1",
+    "enrollmentDate": "2025-02-10T12:00:00.000Z",
+    "lastAccessDate": "2025-05-08T16:30:00.000Z",
+    "progress": 75,
+    "currentModule": "m2",
+    "currentLesson": "l2",
+    "completedLessons": ["m1.l1", "m1.l2", "m1.l3", "m2.l1"],
+    "certificateIssued": false,
+    "status": "active"
+  }
+]
