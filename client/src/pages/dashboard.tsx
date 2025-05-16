@@ -24,7 +24,9 @@ import {
   CheckCircle, 
   ExternalLink,
   BarChart, 
-  Zap
+  Zap,
+  User,
+  MessageSquare
 } from "lucide-react";
 
 export default function Dashboard() {
@@ -75,12 +77,28 @@ export default function Dashboard() {
           <p className="text-muted-foreground">Track your progress and manage your learning journey</p>
         </div>
         
-        <Button asChild className="primary-btn">
-          <Link href="/courses">
-            <Zap className="mr-2 h-4 w-4" />
-            Explore More Courses
-          </Link>
-        </Button>
+        <div className="flex gap-3">
+          <Button variant="outline" asChild className="hidden sm:flex">
+            <Link href="/profile">
+              <User className="mr-2 h-4 w-4" />
+              My Profile
+            </Link>
+          </Button>
+          
+          <Button variant="outline" asChild className="hidden sm:flex">
+            <Link href="/helpdesk">
+              <MessageSquare className="mr-2 h-4 w-4" />
+              Solve with Prof
+            </Link>
+          </Button>
+          
+          <Button asChild className="primary-btn">
+            <Link href="/courses">
+              <Zap className="mr-2 h-4 w-4" />
+              Explore Courses
+            </Link>
+          </Button>
+        </div>
       </div>
       
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full space-y-8">
