@@ -20,6 +20,19 @@ export function FuturisticHeader() {
     opacity: number;
     hue: number;
   }[]>([]);
+  const [threeDObjects, setThreeDObjects] = useState<{
+    id: number;
+    x: number;
+    y: number;
+    scale: number;
+    rotateX: number;
+    rotateY: number;
+    rotateZ: number;
+    delay: number;
+    duration: number;
+    type: 'cube' | 'sphere' | 'pyramid' | 'ring';
+    color: string;
+  }[]>([]);
   
   // Generate matrix-like drops and blur objects for the background animation
   useEffect(() => {
@@ -44,8 +57,37 @@ export function FuturisticHeader() {
       hue: randomInRange(180, 260) // Blue to purple hues
     }));
     
+    // Generate 3D objects that will float in the background
+    const objectTypes: ('cube' | 'sphere' | 'pyramid' | 'ring')[] = ['cube', 'sphere', 'pyramid', 'ring'];
+    const numThreeDObjects = 6; // Not too many to avoid clutter
+    const newThreeDObjects = Array.from({ length: numThreeDObjects }, (_, i) => {
+      // Decide on a random color from futuristic palette
+      const colors = [
+        'rgba(64, 121, 255, 0.2)',   // Blue
+        'rgba(129, 30, 255, 0.2)',   // Purple
+        'rgba(0, 217, 255, 0.2)',    // Cyan
+        'rgba(255, 71, 200, 0.2)',   // Pink
+        'rgba(0, 230, 175, 0.2)'     // Teal
+      ];
+      
+      return {
+        id: i,
+        x: randomInRange(5, 95),
+        y: randomInRange(10, 90),
+        scale: randomInRange(0.2, 0.8),
+        rotateX: randomInRange(0, 360),
+        rotateY: randomInRange(0, 360),
+        rotateZ: randomInRange(0, 360),
+        delay: randomInRange(0, 3),
+        duration: randomInRange(20, 40),
+        type: objectTypes[Math.floor(Math.random() * objectTypes.length)],
+        color: colors[Math.floor(Math.random() * colors.length)]
+      };
+    });
+    
     setMatrixDrops(newDrops);
     setBlurObjects(newBlurObjects);
+    setThreeDObjects(newThreeDObjects);
     
     // Trigger entrance animation
     setTimeout(() => setIsVisible(true), 300);
@@ -163,6 +205,33 @@ export function FuturisticHeader() {
     })
   };
   
+  // 3D object animation variants
+  const threeDObjectVariants = {
+    initial: (custom: { delay: number, duration: number }) => ({
+      opacity: 0,
+      scale: 0.5,
+      filter: "blur(4px)",
+      rotateX: 0,
+      rotateY: 0,
+      rotateZ: 0,
+    }),
+    animate: (custom: { delay: number, duration: number }) => ({
+      opacity: [0.4, 0.8, 0.4],
+      scale: [0.8, 1.2, 0.8],
+      filter: ["blur(2px)", "blur(4px)", "blur(2px)"],
+      rotateX: [0, 180, 360],
+      rotateY: [0, 360, 0],
+      rotateZ: [0, -180, 0],
+      transition: {
+        delay: custom.delay,
+        duration: custom.duration,
+        repeat: Infinity,
+        repeatType: "loop" as const,
+        ease: "linear"
+      }
+    })
+  };
+  
   // Icon hover animation
   const iconHoverVariants = {
     initial: { scale: 1 },
@@ -185,6 +254,110 @@ export function FuturisticHeader() {
     >
       {/* Background with matrix-like effect and blur objects */}
       <div className="absolute inset-0 overflow-hidden">
+        {/* 3D Objects with animation */}
+        {threeDObjects.map((obj) => {
+          // Different shape for each type of 3D object
+          let objectJSX;
+          
+          switch(obj.type) {
+            case 'cube':
+              objectJSX = (
+                <div className="w-full h-full relative preserve-3d">
+                  {/* Front face */}
+                  <div className="absolute inset-0 border-2 border-opacity-50 transform translate-z-[15px]" 
+                    style={{borderColor: obj.color.replace(/[^,]+\)/, '0.6)')}} />
+                  {/* Back face */}
+                  <div className="absolute inset-0 border-2 border-opacity-50 transform -translate-z-[15px]" 
+                    style={{borderColor: obj.color.replace(/[^,]+\)/, '0.6)')}} />
+                  {/* Left face */}
+                  <div className="absolute inset-0 border-2 border-opacity-50 transform -translate-x-[15px] rotate-y-90" 
+                    style={{borderColor: obj.color.replace(/[^,]+\)/, '0.6)')}} />
+                  {/* Right face */}
+                  <div className="absolute inset-0 border-2 border-opacity-50 transform translate-x-[15px] rotate-y-90" 
+                    style={{borderColor: obj.color.replace(/[^,]+\)/, '0.6)')}} />
+                  {/* Top face */}
+                  <div className="absolute inset-0 border-2 border-opacity-50 transform -translate-y-[15px] rotate-x-90" 
+                    style={{borderColor: obj.color.replace(/[^,]+\)/, '0.6)')}} />
+                  {/* Bottom face */}
+                  <div className="absolute inset-0 border-2 border-opacity-50 transform translate-y-[15px] rotate-x-90" 
+                    style={{borderColor: obj.color.replace(/[^,]+\)/, '0.6)')}} />
+                </div>
+              );
+              break;
+            
+            case 'sphere':
+              objectJSX = (
+                <div className="w-full h-full rounded-full border-2 border-opacity-50"
+                  style={{
+                    borderColor: obj.color.replace(/[^,]+\)/, '0.6)'),
+                    background: obj.color,
+                    boxShadow: `0 0 20px ${obj.color.replace(/[^,]+\)/, '0.4)')}`
+                  }} />
+              );
+              break;
+              
+            case 'pyramid':
+              objectJSX = (
+                <div className="w-full h-full relative preserve-3d">
+                  {/* Base */}
+                  <div className="absolute bottom-0 left-0 right-0 border-2 border-opacity-50 transform-origin-bottom rotate-x-[70deg]"
+                    style={{
+                      borderColor: obj.color.replace(/[^,]+\)/, '0.6)'),
+                      height: '70%',
+                    }} />
+                  {/* Front face */}
+                  <div className="absolute bottom-0 left-[25%] right-[25%] h-full border-l-2 border-r-2 border-opacity-50 transform-origin-bottom rotate-x-[30deg]"
+                    style={{borderColor: obj.color.replace(/[^,]+\)/, '0.6)')}} />
+                  {/* Left face */}
+                  <div className="absolute bottom-0 left-0 w-[50%] h-full border-l-2 border-r-2 border-opacity-50 transform-origin-bottom-right rotate-y-[30deg] rotate-x-[30deg]"
+                    style={{borderColor: obj.color.replace(/[^,]+\)/, '0.6)')}} />
+                  {/* Right face */}
+                  <div className="absolute bottom-0 right-0 w-[50%] h-full border-l-2 border-r-2 border-opacity-50 transform-origin-bottom-left -rotate-y-[30deg] rotate-x-[30deg]"
+                    style={{borderColor: obj.color.replace(/[^,]+\)/, '0.6)')}} />
+                </div>
+              );
+              break;
+              
+            case 'ring':
+              objectJSX = (
+                <div className="w-full h-full rounded-full border-4 border-opacity-60 flex items-center justify-center"
+                  style={{
+                    borderColor: obj.color.replace(/[^,]+\)/, '0.8)'),
+                    boxShadow: `0 0 15px ${obj.color.replace(/[^,]+\)/, '0.5)')}`
+                  }}>
+                  <div className="w-[70%] h-[70%] rounded-full"
+                    style={{
+                      background: obj.color.replace(/[^,]+\)/, '0.3)'),
+                    }} />
+                </div>
+              );
+              break;
+              
+            default:
+              objectJSX = <div className="w-full h-full rounded-full" style={{background: obj.color}} />;
+          }
+          
+          return (
+            <motion.div
+              key={`3d-${obj.id}`}
+              className="absolute"
+              custom={{delay: obj.delay, duration: obj.duration}}
+              style={{
+                left: `${obj.x}%`,
+                top: `${obj.y}%`,
+                width: `${40 * obj.scale}px`,
+                height: `${40 * obj.scale}px`,
+                perspective: '400px',
+              }}
+              variants={threeDObjectVariants}
+              initial="initial"
+              animate="animate"
+            >
+              {objectJSX}
+            </motion.div>
+          );
+        })}
+        
         {/* Floating blur objects */}
         {blurObjects.map((obj) => (
           <motion.div

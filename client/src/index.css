@@ -125,6 +125,71 @@
     animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
   }
 
+  /* 3D Transform Utilities for header objects */
+  .preserve-3d {
+    transform-style: preserve-3d;
+  }
+
+  .translate-z-\[15px\] {
+    transform: translateZ(15px);
+  }
+
+  .-translate-z-\[15px\] {
+    transform: translateZ(-15px);
+  }
+
+  .translate-x-\[15px\] {
+    transform: translateX(15px);
+  }
+
+  .-translate-x-\[15px\] {
+    transform: translateX(-15px);
+  }
+
+  .translate-y-\[15px\] {
+    transform: translateY(15px);
+  }
+
+  .-translate-y-\[15px\] {
+    transform: translateY(-15px);
+  }
+
+  .rotate-y-90 {
+    transform: rotateY(90deg);
+  }
+
+  .rotate-x-90 {
+    transform: rotateX(90deg);
+  }
+
+  .rotate-x-\[30deg\] {
+    transform: rotateX(30deg);
+  }
+
+  .rotate-x-\[70deg\] {
+    transform: rotateX(70deg);
+  }
+
+  .rotate-y-\[30deg\] {
+    transform: rotateY(30deg);
+  }
+
+  .-rotate-y-\[30deg\] {
+    transform: rotateY(-30deg);
+  }
+
+  .transform-origin-bottom {
+    transform-origin: bottom;
+  }
+
+  .transform-origin-bottom-right {
+    transform-origin: bottom right;
+  }
+
+  .transform-origin-bottom-left {
+    transform-origin: bottom left;
+  }
+
   @keyframes float {
     0%, 100% { transform: translateY(0); }
     50% { transform: translateY(-10px); }
