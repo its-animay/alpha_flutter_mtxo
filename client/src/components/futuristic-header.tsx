@@ -4,11 +4,24 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { User, MessageSquare, Layers, Brain } from "lucide-react";
 
+// Utility function to generate random number in range
+const randomInRange = (min: number, max: number) => Math.random() * (max - min) + min;
+
 export function FuturisticHeader() {
   const [isVisible, setIsVisible] = useState(false);
   const [matrixDrops, setMatrixDrops] = useState<{ id: number; x: number; delay: number; speed: number }[]>([]);
+  const [blurObjects, setBlurObjects] = useState<{ 
+    id: number; 
+    x: number; 
+    y: number; 
+    size: number; 
+    delay: number; 
+    duration: number;
+    opacity: number;
+    hue: number;
+  }[]>([]);
   
-  // Generate matrix-like drops for the background animation
+  // Generate matrix-like drops and blur objects for the background animation
   useEffect(() => {
     const numDrops = 30; // Number of "matrix-like" vertical drops
     const newDrops = Array.from({ length: numDrops }, (_, i) => ({
@@ -18,7 +31,21 @@ export function FuturisticHeader() {
       speed: 1 + Math.random() * 1.5, // Random speed for animation
     }));
     
+    // Generate blur objects with various colors and sizes
+    const numBlurObjects = 12;
+    const newBlurObjects = Array.from({ length: numBlurObjects }, (_, i) => ({
+      id: i,
+      x: randomInRange(-5, 105), // Position may be slightly outside the container for partial visibility
+      y: randomInRange(-20, 120), 
+      size: randomInRange(30, 150), // Various sizes for depth effect
+      delay: randomInRange(0, 2),
+      duration: randomInRange(15, 40), // Slow movement
+      opacity: randomInRange(0.05, 0.2), // Very subtle opacity
+      hue: randomInRange(180, 260) // Blue to purple hues
+    }));
+    
     setMatrixDrops(newDrops);
+    setBlurObjects(newBlurObjects);
     
     // Trigger entrance animation
     setTimeout(() => setIsVisible(true), 300);
@@ -113,6 +140,29 @@ export function FuturisticHeader() {
     }
   };
   
+  // Blur object animation variants
+  const blurObjectVariants = {
+    initial: (custom: { delay: number, duration: number }) => ({
+      x: "0%",
+      y: "0%",
+      opacity: 0,
+      filter: "blur(8px)",
+    }),
+    animate: (custom: { delay: number, duration: number }) => ({
+      x: ["0%", "10%", "-15%", "5%", "0%"],
+      y: ["0%", "15%", "-5%", "-10%", "0%"],
+      opacity: 1,
+      filter: "blur(40px)",
+      transition: {
+        delay: custom.delay,
+        duration: custom.duration,
+        repeat: Infinity,
+        repeatType: "loop" as const,
+        ease: "linear"
+      }
+    })
+  };
+  
   // Icon hover animation
   const iconHoverVariants = {
     initial: { scale: 1 },
@@ -133,11 +183,31 @@ export function FuturisticHeader() {
       animate={isVisible ? "visible" : "hidden"}
       variants={containerVariants}
     >
-      {/* Background with matrix-like effect */}
+      {/* Background with matrix-like effect and blur objects */}
       <div className="absolute inset-0 overflow-hidden">
+        {/* Floating blur objects */}
+        {blurObjects.map((obj) => (
+          <motion.div
+            key={`blur-${obj.id}`}
+            className="absolute rounded-full"
+            custom={{delay: obj.delay, duration: obj.duration}}
+            style={{ 
+              left: `${obj.x}%`, 
+              top: `${obj.y}%`, 
+              width: `${obj.size}px`, 
+              height: `${obj.size}px`,
+              background: `radial-gradient(circle, hsla(${obj.hue}, 80%, 60%, ${obj.opacity}) 0%, hsla(${obj.hue}, 70%, 50%, 0) 70%)`,
+            }}
+            variants={blurObjectVariants}
+            initial="initial"
+            animate="animate"
+          />
+        ))}
+        
+        {/* Matrix-like drops */}
         {matrixDrops.map((drop) => (
           <motion.div
-            key={drop.id}
+            key={`matrix-${drop.id}`}
             className="absolute w-[1px] bg-primary/20 dark:bg-primary/40"
             custom={{speed: drop.speed, delay: drop.delay}}
             style={{ left: `${drop.x}%` }}
@@ -146,6 +216,8 @@ export function FuturisticHeader() {
             animate="animate"
           />
         ))}
+        
+        {/* Gradient overlay */}
         <div className="absolute inset-0 bg-gradient-to-r from-background via-background/80 to-background pointer-events-none" />
       </div>
       
