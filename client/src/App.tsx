@@ -19,6 +19,7 @@ import Helpdesk from "@/pages/helpdesk";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { ParticleBackground } from "@/components/particle-background";
 import { FactCard } from "@/components/fact-card";
+import { FuturisticHeader } from "@/components/futuristic-header";
 
 function Router() {
   return (
@@ -91,14 +92,7 @@ function AppLayout() {
     <div className="relative min-h-screen w-full flex flex-col">
       <ParticleBackground />
       
-      <header className="sticky top-0 z-50 px-6 py-3 flex justify-between bg-background/80 backdrop-blur-md">
-        <div className="flex items-center">
-          <h1 className="text-xl font-bold">MTXO Labs</h1>
-        </div>
-        <div className="flex items-center gap-4">
-          <ThemeToggle />
-        </div>
-      </header>
+      <FuturisticHeader />
       
       <main className="flex-grow">
         <Router />
