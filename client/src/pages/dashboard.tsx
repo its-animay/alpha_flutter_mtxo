@@ -70,7 +70,7 @@ export default function Dashboard() {
   ];
   
   return (
-    <div className="px-4 py-8 mx-auto w-full max-w-[1400px]">
+    <div className="px-4 py-8 mx-auto w-full max-w-full">
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-8 gap-4">
         <div>
           <h1 className="text-3xl font-bold">My Dashboard</h1>
@@ -112,7 +112,7 @@ export default function Dashboard() {
           <h2 className="text-2xl font-semibold">In Progress</h2>
           
           {enrolledCourses.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 auto-rows-fr gap-6" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))' }}>
               {enrolledCourses.map((course, index) => {
                 const courseProgress = progressData.find(p => p.courseId === course.id);
                 const progressPercentage = courseProgress?.progress || 0;
@@ -205,7 +205,7 @@ export default function Dashboard() {
           )}
           
           <h2 className="text-2xl font-semibold mt-8">Recommended Courses</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 auto-rows-fr gap-6" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))' }}>
             {courses.slice(2, 5).map(course => {
               // Use a placeholder image until real images are available
               const thumbnailSrc = course.thumbnail.startsWith('/') 
