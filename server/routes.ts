@@ -9,6 +9,7 @@ import multer from "multer";
 import { v4 as uuidv4 } from 'uuid';
 import path from 'path';
 import fs from 'fs';
+import { createDownloadableZip, generateZipFile } from "./create-download-zip";
 
 // Authentication middleware
 function isAuthenticated(req: Request, res: Response, next: NextFunction) {
