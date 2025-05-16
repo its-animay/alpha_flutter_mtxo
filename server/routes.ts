@@ -1,7 +1,22 @@
-import type { Express, Request, Response } from "express";
+import type { Express, Request, Response, NextFunction } from "express";
 import { createServer, type Server } from "http";
+import { WebSocketServer } from 'ws';
 import Stripe from "stripe";
 import { storage } from "./storage";
+import * as schema from "@shared/schema";
+import { db } from "./db";
+import multer from "multer";
+import { v4 as uuidv4 } from 'uuid';
+import path from 'path';
+import fs from 'fs';
+
+// Authentication middleware
+function isAuthenticated(req: Request, res: Response, next: NextFunction) {
+  if (req.isAuthenticated()) {
+    return next();
+  }
+  res.status(401).json({ error: "Not authenticated" });
+}
 
 // Initialize Stripe with our secret key
 if (!process.env.STRIPE_SECRET_KEY) {
