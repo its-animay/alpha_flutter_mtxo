@@ -14,6 +14,8 @@ import CourseSuccess from "@/pages/course-success";
 import Lesson from "@/pages/lesson";
 import ModuleQuiz from "@/pages/module-quiz";
 import Dashboard from "@/pages/dashboard";
+import Profile from "@/pages/profile";
+import Helpdesk from "@/pages/helpdesk";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { ParticleBackground } from "@/components/particle-background";
 import { FactCard } from "@/components/fact-card";
@@ -36,6 +38,8 @@ function Router() {
       <Route path="/course-success" component={CourseSuccess} />
       <Route path="/lesson/:courseId/:moduleId/:lessonId" component={Lesson} />
       <Route path="/quiz/:courseId/:moduleId" component={ModuleQuiz} />
+      <Route path="/profile" component={Profile} />
+      <Route path="/helpdesk" component={Helpdesk} />
       
       {/* Fallback Route */}
       <Route component={NotFound} />
