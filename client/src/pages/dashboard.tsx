@@ -112,7 +112,7 @@ export default function Dashboard() {
           <h2 className="text-2xl font-semibold">In Progress</h2>
           
           {enrolledCourses.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
               {enrolledCourses.map((course, index) => {
                 const courseProgress = progressData.find(p => p.courseId === course.id);
                 const progressPercentage = courseProgress?.progress || 0;
@@ -205,7 +205,7 @@ export default function Dashboard() {
           )}
           
           <h2 className="text-2xl font-semibold mt-8">Recommended Courses</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
             {courses.slice(2, 5).map(course => {
               // Use a placeholder image until real images are available
               const thumbnailSrc = course.thumbnail.startsWith('/') 
