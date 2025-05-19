@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:mtxo_labs_edtech/navigation/app_router.dart';
+import 'package:mtxo_labs_edtech/routes.dart';
 import 'package:mtxo_labs_edtech/services/auth_service.dart';
+import 'package:mtxo_labs_edtech/services/theme_service.dart';
 import 'package:mtxo_labs_edtech/theme/app_theme.dart';
-import 'package:mtxo_labs_edtech/services/api_service.dart';
-import 'package:mtxo_labs_edtech/services/course_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -16,38 +15,50 @@ void main() async {
     DeviceOrientation.portraitDown,
   ]);
   
-  // Initialize services here
-  final authService = AuthService();
-  await authService.initialize();
-  
-  runApp(
-    MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => authService),
-        ChangeNotifierProvider(create: (_) => ThemeProvider()),
-        Provider(create: (_) => ApiService()),
-        Provider(create: (_) => CourseService()),
-      ],
-      child: const MTXOLabsApp(),
+  // Set system UI overlay style
+  SystemChrome.setSystemUIOverlayStyle(
+    const SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarIconBrightness: Brightness.light,
+      systemNavigationBarColor: Colors.black,
+      systemNavigationBarIconBrightness: Brightness.light,
     ),
   );
+  
+  runApp(const MyApp());
 }
 
-class MTXOLabsApp extends StatelessWidget {
-  const MTXOLabsApp({super.key});
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final themeProvider = Provider.of<ThemeProvider>(context);
-    final authService = Provider.of<AuthService>(context);
-    
-    return MaterialApp.router(
-      title: 'MTXO Labs EdTech',
-      theme: themeProvider.lightTheme,
-      darkTheme: themeProvider.darkTheme,
-      themeMode: themeProvider.themeMode,
-      debugShowCheckedModeBanner: false,
-      routerConfig: createRouter(authService),
+    return MultiProvider(
+      providers: [
+        // Auth service provider
+        ChangeNotifierProvider(
+          create: (_) => AuthService(),
+        ),
+        
+        // Theme service provider
+        ChangeNotifierProvider(
+          create: (_) => ThemeService(),
+        ),
+        
+        // Add other service providers here
+      ],
+      child: Consumer<ThemeService>(
+        builder: (context, themeService, _) {
+          return MaterialApp.router(
+            title: 'MTXO Labs EdTech',
+            debugShowCheckedModeBanner: false,
+            theme: AppTheme.lightTheme(),
+            darkTheme: AppTheme.darkTheme(),
+            themeMode: themeService.themeMode,
+            routerConfig: AppRouter.getRouter(context),
+          );
+        },
+      ),
     );
   }
 }
