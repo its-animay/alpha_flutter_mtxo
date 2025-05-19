@@ -3,7 +3,9 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:mtxo_labs_edtech/services/auth_service.dart';
 import 'package:mtxo_labs_edtech/theme/app_theme.dart';
+import 'package:mtxo_labs_edtech/utils/validation_utils.dart';
 import 'package:mtxo_labs_edtech/widgets/animated_gradient_background.dart';
+import 'package:mtxo_labs_edtech/widgets/form/enhanced_text_field.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({super.key});
@@ -12,15 +14,51 @@ class ForgotPasswordScreen extends StatefulWidget {
   State<ForgotPasswordScreen> createState() => _ForgotPasswordScreenState();
 }
 
-class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
+class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> with SingleTickerProviderStateMixin {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   bool _isSubmitted = false;
   String? _errorMessage;
   
+  // Animation controllers
+  late AnimationController _animationController;
+  late Animation<double> _fadeAnimation;
+  late Animation<Offset> _slideAnimation;
+  
+  @override
+  void initState() {
+    super.initState();
+    
+    // Initialize animation controller
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 500),
+    );
+    
+    _fadeAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.easeInOut,
+    ));
+    
+    _slideAnimation = Tween<Offset>(
+      begin: const Offset(0.0, 0.1),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.easeOut,
+    ));
+    
+    // Start animation
+    _animationController.forward();
+  }
+  
   @override
   void dispose() {
     _emailController.dispose();
+    _animationController.dispose();
     super.dispose();
   }
   
@@ -34,13 +72,21 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
       final success = await authService.forgotPassword(_emailController.text);
       
       if (success && mounted) {
+        // Animate transition to success state
+        _animationController.reset();
         setState(() {
           _isSubmitted = true;
         });
+        _animationController.forward();
       } else if (mounted) {
+        // Shake animation for error
+        _animationController.reset();
+        
         setState(() {
           _errorMessage = 'Failed to process your request. Please try again later.';
         });
+        
+        _animationController.forward();
       }
     }
   }
@@ -65,9 +111,15 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
           child: Center(
             child: SingleChildScrollView(
               padding: const EdgeInsets.all(24.0),
-              child: _isSubmitted 
-                ? _buildSuccessState(theme) 
-                : _buildRequestForm(theme, authService),
+              child: FadeTransition(
+                opacity: _fadeAnimation,
+                child: SlideTransition(
+                  position: _slideAnimation,
+                  child: _isSubmitted 
+                    ? _buildSuccessState(theme) 
+                    : _buildRequestForm(theme, authService),
+                ),
+              ),
             ),
           ),
         ),
@@ -82,13 +134,28 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // Icon and Title
+          // Icon and Title with animations
           Column(
             children: [
-              Icon(
-                Icons.lock_reset,
-                size: 80,
-                color: Colors.white,
+              Container(
+                height: 100,
+                width: 100,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.white,
+                  boxShadow: [
+                    BoxShadow(
+                      color: theme.colorScheme.primary.withOpacity(0.3),
+                      blurRadius: 20,
+                      spreadRadius: 2,
+                    ),
+                  ],
+                ),
+                child: Icon(
+                  Icons.lock_reset,
+                  size: 60,
+                  color: theme.colorScheme.primary,
+                ),
               ),
               const SizedBox(height: 24),
               Text(
@@ -128,13 +195,17 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Error message if there's an error
+                // Error message with animation
                 if (_errorMessage != null) ...[
-                  Container(
+                  AnimatedContainer(
+                    duration: const Duration(milliseconds: 300),
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
                       color: theme.colorScheme.error.withOpacity(0.1),
                       borderRadius: BorderRadius.circular(8),
+                      border: Border.all(
+                        color: theme.colorScheme.error.withOpacity(0.3),
+                      ),
                     ),
                     child: Row(
                       children: [
@@ -157,43 +228,47 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   const SizedBox(height: 16),
                 ],
                 
-                // Email field
-                TextFormField(
+                // Enhanced email field with validation
+                EnhancedTextField(
                   controller: _emailController,
-                  decoration: InputDecoration(
-                    labelText: 'Email',
-                    prefixIcon: const Icon(Icons.email_outlined),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your email';
-                    }
-                    
-                    final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
-                    if (!emailRegex.hasMatch(value)) {
-                      return 'Please enter a valid email';
-                    }
-                    
-                    return null;
-                  },
+                  label: 'Email Address',
+                  hint: 'Enter your account email',
+                  prefixIcon: Icons.email_outlined,
                   keyboardType: TextInputType.emailAddress,
                   textInputAction: TextInputAction.done,
-                  onFieldSubmitted: (_) => _handleResetPassword(),
+                  validator: ValidationUtils.validateEmail,
+                  onSubmitted: (_) => _handleResetPassword(),
                 ),
                 
                 const SizedBox(height: 24),
                 
-                // Submit button
+                // Submit button with loading state
                 SizedBox(
                   height: 50,
                   child: ElevatedButton(
                     onPressed: authService.isLoading ? null : _handleResetPassword,
+                    style: ElevatedButton.styleFrom(
+                      elevation: 3,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
                     child: authService.isLoading
-                        ? const CircularProgressIndicator()
-                        : const Text('Send Reset Link'),
+                        ? const SizedBox(
+                            width: 24,
+                            height: 24,
+                            child: CircularProgressIndicator(
+                              color: Colors.white,
+                              strokeWidth: 2,
+                            ),
+                          )
+                        : const Text(
+                            'Send Reset Link',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                   ),
                 ),
               ],
@@ -229,10 +304,25 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         // Success icon and message
         Column(
           children: [
-            Icon(
-              Icons.check_circle_outline,
-              size: 80,
-              color: Colors.white,
+            Container(
+              height: 100,
+              width: 100,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: AppColors.success.withOpacity(0.9),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.success.withOpacity(0.3),
+                    blurRadius: 20,
+                    spreadRadius: 2,
+                  ),
+                ],
+              ),
+              child: const Icon(
+                Icons.check_circle_outline,
+                size: 60,
+                color: Colors.white,
+              ),
             ),
             const SizedBox(height: 24),
             Text(
@@ -251,12 +341,23 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 8),
-            Text(
-              _emailController.text,
-              style: AppTextStyles.heading5.copyWith(
-                color: Colors.white,
+            Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 8,
               ),
-              textAlign: TextAlign.center,
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.2),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Text(
+                _emailController.text,
+                style: AppTextStyles.heading5.copyWith(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+                textAlign: TextAlign.center,
+              ),
             ),
           ],
         ),
@@ -287,29 +388,45 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 16),
-              ListTile(
-                leading: CircleAvatar(
-                  backgroundColor: theme.colorScheme.primary.withOpacity(0.2),
-                  child: Text('1', style: TextStyle(color: theme.colorScheme.primary)),
+              
+              // Animated list tiles for better visibility
+              AnimatedOpacity(
+                opacity: 1.0,
+                duration: const Duration(milliseconds: 500),
+                child: ListTile(
+                  leading: CircleAvatar(
+                    backgroundColor: theme.colorScheme.primary.withOpacity(0.2),
+                    child: Text('1', style: TextStyle(color: theme.colorScheme.primary)),
+                  ),
+                  title: const Text('Check your email inbox'),
+                  subtitle: const Text('Don\'t forget to check your spam folder'),
                 ),
-                title: Text('Check your email inbox'),
-                subtitle: Text('Don\'t forget to check your spam folder'),
               ),
-              ListTile(
-                leading: CircleAvatar(
-                  backgroundColor: theme.colorScheme.primary.withOpacity(0.2),
-                  child: Text('2', style: TextStyle(color: theme.colorScheme.primary)),
+              
+              AnimatedOpacity(
+                opacity: 1.0,
+                duration: const Duration(milliseconds: 700),
+                child: ListTile(
+                  leading: CircleAvatar(
+                    backgroundColor: theme.colorScheme.primary.withOpacity(0.2),
+                    child: Text('2', style: TextStyle(color: theme.colorScheme.primary)),
+                  ),
+                  title: const Text('Click the reset link in the email'),
+                  subtitle: const Text('The link is valid for 24 hours'),
                 ),
-                title: Text('Click the reset link in the email'),
-                subtitle: Text('The link is valid for 24 hours'),
               ),
-              ListTile(
-                leading: CircleAvatar(
-                  backgroundColor: theme.colorScheme.primary.withOpacity(0.2),
-                  child: Text('3', style: TextStyle(color: theme.colorScheme.primary)),
+              
+              AnimatedOpacity(
+                opacity: 1.0,
+                duration: const Duration(milliseconds: 900),
+                child: ListTile(
+                  leading: CircleAvatar(
+                    backgroundColor: theme.colorScheme.primary.withOpacity(0.2),
+                    child: Text('3', style: TextStyle(color: theme.colorScheme.primary)),
+                  ),
+                  title: const Text('Create a new password'),
+                  subtitle: const Text('Choose a strong password you haven\'t used before'),
                 ),
-                title: Text('Create a new password'),
-                subtitle: Text('Choose a strong password you haven\'t used before'),
               ),
             ],
           ),
@@ -320,15 +437,21 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         // Back to login button
         SizedBox(
           height: 50,
-          child: OutlinedButton(
-            onPressed: () => context.go('/auth/login'),
-            style: OutlinedButton.styleFrom(
-              side: BorderSide(color: Colors.white),
-            ),
-            child: Text(
+          child: OutlinedButton.icon(
+            icon: const Icon(Icons.login, color: Colors.white),
+            label: const Text(
               'Back to Login',
               style: TextStyle(
                 color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
+              ),
+            ),
+            onPressed: () => context.go('/auth/login'),
+            style: OutlinedButton.styleFrom(
+              side: const BorderSide(color: Colors.white, width: 2),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
               ),
             ),
           ),
