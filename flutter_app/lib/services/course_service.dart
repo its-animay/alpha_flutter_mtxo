@@ -198,7 +198,7 @@ class CourseService {
       // Calculate total number of lessons in the course
       int totalLessons = 0;
       for (final module in course.modules ?? []) {
-        totalLessons += module.lessons.length;
+        totalLessons = totalLessons + module.lessons.length;
       }
       
       // Calculate progress percentage
