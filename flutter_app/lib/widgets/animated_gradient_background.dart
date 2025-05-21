@@ -59,18 +59,156 @@ class _AnimatedGradientBackgroundState extends State<AnimatedGradientBackground>
     super.dispose();
   }
   
+  /// Build a gradient that matches the web app exactly
+  Gradient _buildWebAppBackground(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    
+    if (isDark) {
+      // Dark mode - solid dark blue with subtle radial overlay
+      return const RadialGradient(
+        center: Alignment(0.1, -0.3),
+        radius: 1.2,
+        colors: [
+          Color(0xFF1E2539), // slightly lighter shade
+          Color(0xFF191E2C), // base dark background
+          Color(0xFF151A27), // slightly darker shade
+        ],
+        stops: [0.0, 0.5, 1.0],
+      );
+    } else {
+      // Light mode - soft gradient from top-left to bottom-right
+      return const LinearGradient(
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+        colors: [
+          Color(0xFFEDF5FF), // light-bg-start: 220 100% 98%
+          Color(0xFFE1EDFE), // light-bg-end: 217 93% 94%
+        ],
+        stops: [0.0, 1.0],
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        gradient: _buildWebAppBackground(context),
+      ),
+      child: Stack(
+        children: [
+          // Add floating elements for visual interest similar to web
+          if (Theme.of(context).brightness == Brightness.dark)
+            _buildDarkModeBackgroundElements(),
+          if (Theme.of(context).brightness == Brightness.light)
+            _buildLightModeBackgroundElements(),
+          
+          // Main content
+          widget.child,
+        ],
+      ),
+    );
+  }
+  
+  /// Build background elements for dark mode that match web app design
+  Widget _buildDarkModeBackgroundElements() {
     return AnimatedBuilder(
       animation: _animation,
       builder: (context, _) {
-        return Container(
-          decoration: BoxDecoration(
-            gradient: widget.useCircularGradient
-                ? _buildRadialGradient()
-                : _buildLinearGradient(),
-          ),
-          child: widget.child,
+        return Stack(
+          children: [
+            // Glowing accent in top-right
+            Positioned(
+              top: -50,
+              right: -100,
+              child: Container(
+                width: 300,
+                height: 300,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.primary.withOpacity(0.1),
+                      blurRadius: 100,
+                      spreadRadius: 30,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            
+            // Glowing accent in bottom-left
+            Positioned(
+              bottom: -80,
+              left: -80,
+              child: Container(
+                width: 250,
+                height: 250,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.secondary.withOpacity(0.08),
+                      blurRadius: 80,
+                      spreadRadius: 20,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+  
+  /// Build background elements for light mode that match web app design
+  Widget _buildLightModeBackgroundElements() {
+    return AnimatedBuilder(
+      animation: _animation,
+      builder: (context, _) {
+        return Stack(
+          children: [
+            // Very subtle blur elements for light mode
+            Positioned(
+              top: 100,
+              right: 20,
+              child: Container(
+                width: 200,
+                height: 200,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.primary.withOpacity(0.05),
+                      blurRadius: 80,
+                      spreadRadius: 10,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            
+            // Another subtle element
+            Positioned(
+              bottom: 150,
+              left: 30,
+              child: Container(
+                width: 180,
+                height: 180,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.secondary.withOpacity(0.04),
+                      blurRadius: 60,
+                      spreadRadius: 10,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
         );
       },
     );
