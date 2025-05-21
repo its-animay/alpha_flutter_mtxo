@@ -70,7 +70,7 @@ class EnrollmentCard extends StatelessWidget {
                   left: 0,
                   right: 0,
                   child: LinearProgressIndicator(
-                    value: progress,
+                    value: progress / 100,
                     backgroundColor: Colors.black.withOpacity(0.2),
                     valueColor: AlwaysStoppedAnimation<Color>(
                       theme.colorScheme.primary,
@@ -114,7 +114,7 @@ class EnrollmentCard extends StatelessWidget {
                     children: [
                       // Lessons count
                       Text(
-                        '${course.totalLessons} lessons',
+                        'By: $instructorName',
                         style: TextStyle(
                           color: theme.colorScheme.onSurface.withOpacity(0.6),
                         ),
@@ -124,7 +124,7 @@ class EnrollmentCard extends StatelessWidget {
                       OutlinedButton(
                         onPressed: () {
                           // In a real app, continue from where user left off
-                          context.go('/course/${course.id}');
+                          context.go('/course/$courseId');
                         },
                         child: const Text('Continue'),
                       ),
