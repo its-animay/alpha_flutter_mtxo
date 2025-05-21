@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
+import 'dart:ui';
 import '../theme/app_theme.dart';
 
 /// A widget that displays an animated gradient background.
