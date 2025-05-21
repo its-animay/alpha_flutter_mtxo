@@ -73,7 +73,10 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
         _passwordController.text,
       );
       
-      if (!success && mounted) {
+      if (success && mounted) {
+        // Navigate to the dashboard on successful login
+        context.go('/dashboard');
+      } else if (!success && mounted) {
         // Apply shake animation to form when login fails
         _animationController.reset();
         _animationController.forward();

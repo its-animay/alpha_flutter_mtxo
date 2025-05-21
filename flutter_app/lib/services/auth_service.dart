@@ -34,6 +34,15 @@ class AuthService extends ChangeNotifier {
   /// Initialize the service
   AuthService() {
     _loadFromStorage();
+    
+    // Auto-login for testing immediately after constructor is called
+    // This allows quick testing of themes without going through login
+    Future.delayed(Duration.zero, () {
+      if (!isAuthenticated) {
+        print('🔑 Auto-login for testing activated');
+        signIn('test', 'test123');
+      }
+    });
   }
   
   /// Sign in with username and password
