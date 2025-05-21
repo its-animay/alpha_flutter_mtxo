@@ -49,14 +49,14 @@ class AuthService extends ChangeNotifier {
       // Create a mock user for testing purposes
       _token = 'mock-jwt-token-for-testing-only';
       _currentUser = User(
-        id: '12345',
+        id: 12345,
         username: username.isEmpty ? 'testuser' : username,
         email: 'test@mtxolabs.com',
         fullName: 'Test User',
         role: 'student',
         profileImage: 'https://ui-avatars.com/api/?name=Test+User&background=random',
-        createdAt: DateTime.now().toString(),
-        updatedAt: DateTime.now().toString(),
+        createdAt: DateTime.now(),
+        lastLoginAt: DateTime.now(),
       );
       
       await _saveToStorage();
@@ -100,14 +100,14 @@ class AuthService extends ChangeNotifier {
         // Create a mock user for testing
         _token = 'mock-jwt-token-for-testing-only';
         _currentUser = User(
-          id: '12345',
+          id: 12345,
           username: username.isEmpty ? 'testuser' : username,
           email: 'test@mtxolabs.com',
           fullName: 'Test User',
           role: 'student',
           profileImage: 'https://ui-avatars.com/api/?name=Test+User&background=random',
-          createdAt: DateTime.now().toString(),
-          updatedAt: DateTime.now().toString(),
+          createdAt: DateTime.now(),
+          lastLoginAt: DateTime.now(),
         );
         
         await _saveToStorage();
