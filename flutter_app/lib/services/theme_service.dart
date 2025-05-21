@@ -23,6 +23,14 @@ class ThemeService extends ChangeNotifier {
   /// Current theme data
   ThemeData get currentTheme => _isDarkMode ? darkTheme : lightTheme;
   
+  /// Theme mode for MaterialApp
+  ThemeMode get themeMode {
+    if (_isSystemMode) {
+      return ThemeMode.system;
+    }
+    return _isDarkMode ? ThemeMode.dark : ThemeMode.light;
+  }
+  
   /// Initialize theme service
   ThemeService() {
     _loadThemePreference();

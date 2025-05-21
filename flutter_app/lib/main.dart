@@ -52,8 +52,8 @@ class MyApp extends StatelessWidget {
           return MaterialApp.router(
             title: 'MTXO Labs EdTech',
             debugShowCheckedModeBanner: false,
-            theme: AppTheme.lightTheme(),
-            darkTheme: AppTheme.darkTheme(),
+            theme: AppTheme.lightTheme,
+            darkTheme: AppTheme.darkTheme,
             themeMode: themeService.themeMode,
             routerConfig: AppRouter.getRouter(context),
           );
