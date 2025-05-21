@@ -136,9 +136,7 @@ class CourseRecommendationCard extends StatelessWidget {
                   Text(
                     'Featured',
                     style: TextStyle(
-                      color: Colors.purple
-                          ? Colors.green
-                          : theme.colorScheme.onSurface,
+                      color: Colors.purple,
                       fontWeight: FontWeight.bold,
                       fontSize: 16,
                     ),
@@ -147,7 +145,7 @@ class CourseRecommendationCard extends StatelessWidget {
                   // Explore button
                   ElevatedButton(
                     onPressed: () {
-                      context.go('/course/${course.id}');
+                      context.go('/course/$courseId');
                     },
                     child: const Text('Explore'),
                   ),
