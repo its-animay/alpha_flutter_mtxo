@@ -136,29 +136,29 @@ class AppBorderRadius {
 
 /// Main app theme
 class AppTheme {
-  // Create light theme - matching web app theme
+  // Create light theme - enhanced for better user experience
   static ThemeData lightTheme() {
     final base = ThemeData.light();
     
     return base.copyWith(
       colorScheme: ColorScheme.light(
         primary: AppColors.primary,
-        primaryContainer: AppColors.primary.withOpacity(0.2),
+        primaryContainer: AppColors.primary.withOpacity(0.15),
         onPrimary: Colors.white,
         secondary: AppColors.secondary,
-        secondaryContainer: AppColors.secondary.withOpacity(0.2),
+        secondaryContainer: AppColors.secondary.withOpacity(0.15),
         onSecondary: Colors.white,
         tertiary: AppColors.tertiary,
-        tertiaryContainer: AppColors.tertiary.withOpacity(0.2),
+        tertiaryContainer: AppColors.tertiary.withOpacity(0.15),
         onTertiary: Colors.black,
         error: AppColors.error,
         onError: Colors.white,
-        background: const Color(0xFFF6F9FE), // light-bg-start/end blend
-        onBackground: Colors.black,
-        surface: Colors.white.withOpacity(0.7), // light-card
-        onSurface: Colors.black,
+        background: const Color(0xFFEDF5FF), // Exactly matching web light background
+        onBackground: const Color(0xFF101828), // Darker for better readability
+        surface: Colors.white.withOpacity(0.85), // Slightly more opaque for better readability
+        onSurface: const Color(0xFF101828), // Darker for better contrast
       ),
-      scaffoldBackgroundColor: const Color(0xFFF6F9FE), // light-bg-start/end blend
+      scaffoldBackgroundColor: const Color(0xFFEDF5FF), // Exactly matching web light background
       cardColor: Colors.white,
       dividerColor: Colors.grey[300],
       textTheme: GoogleFonts.poppinsTextTheme(base.textTheme).copyWith(

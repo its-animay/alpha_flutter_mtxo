@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import '../theme/app_theme.dart';
 import 'mtxo_logo.dart';
 import 'theme_toggle_button.dart';
+import 'floating_theme_toggle.dart';
 
 class MainLayout extends StatefulWidget {
   final Widget child;
@@ -94,7 +95,7 @@ class _MainLayoutState extends State<MainLayout> {
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 16.0),
-            child: _buildThemeToggle(),
+            child: _buildFloatingThemeToggle(), // Using our new fancy toggle
           ),
         ],
       ),
@@ -164,12 +165,14 @@ class _MainLayoutState extends State<MainLayout> {
     );
   }
   
-  // Build the theme toggle widget
+  // Build the regular theme toggle widget
   Widget _buildThemeToggle() {
-    // Import the ThemeToggleButton at the top of the file
-    // Adding the import here in the comment as a reminder:
-    // import '../widgets/theme_toggle_button.dart';
     return const ThemeToggleButton();
+  }
+  
+  // Build the fancy floating theme toggle
+  Widget _buildFloatingThemeToggle() {
+    return const FloatingThemeToggle();
   }
 }
 
