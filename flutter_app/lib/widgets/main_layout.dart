@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../theme/app_theme.dart';
+import 'mtxo_logo.dart';
+import 'theme_toggle_button.dart';
 
 class MainLayout extends StatefulWidget {
   final Widget child;
@@ -81,7 +83,34 @@ class _MainLayoutState extends State<MainLayout> {
     final isDark = theme.brightness == Brightness.dark;
     
     return Scaffold(
-      body: widget.child,
+      // AppBar with logo and theme toggle
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        title: Padding(
+          padding: const EdgeInsets.only(left: 8.0),
+          child: _buildLogo(),
+        ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 16.0),
+            child: _buildThemeToggle(),
+          ),
+        ],
+      ),
+      extendBodyBehindAppBar: true,
+      
+      // Main content
+      body: SafeArea(
+        child: Column(
+          children: [
+            // Content area
+            Expanded(child: widget.child),
+          ],
+        ),
+      ),
+      
+      // Bottom navigation bar
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
           boxShadow: [
@@ -122,6 +151,25 @@ class _MainLayoutState extends State<MainLayout> {
         ),
       ),
     );
+  }
+  
+  // Build the logo widget
+  Widget _buildLogo() {
+    // Import the MTXOLogo at the top of the file
+    // Adding the import here in the comment as a reminder:
+    // import '../widgets/mtxo_logo.dart';
+    return const MTXOLogo(
+      size: 36.0,
+      withText: true,
+    );
+  }
+  
+  // Build the theme toggle widget
+  Widget _buildThemeToggle() {
+    // Import the ThemeToggleButton at the top of the file
+    // Adding the import here in the comment as a reminder:
+    // import '../widgets/theme_toggle_button.dart';
+    return const ThemeToggleButton();
   }
 }
 
