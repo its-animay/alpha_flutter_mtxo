@@ -355,7 +355,7 @@ class CourseService {
             id: 'r1',
             userName: 'Michael S.',
             rating: 5.0,
-            comment: 'Incredible course! The instructor explains complex concepts in a way that's easy to understand. Highly recommended for anyone interested in LLMs.',
+            comment: 'Incredible course! The instructor explains complex concepts in a way that is easy to understand. Highly recommended for anyone interested in LLMs.',
             date: '2023-12-15',
           ),
           CourseReview(
