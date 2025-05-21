@@ -1,78 +1,78 @@
-import 'package:flutter/material.dart';
 import 'dart:ui';
-import '../theme/app_theme.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../services/theme_service.dart';
 
-/// A card with a glassmorphic effect that matches the web app exactly
+/// A card with glassmorphic effect
 class GlassmorphicCard extends StatelessWidget {
+  /// Child widget to render inside the card
   final Widget child;
-  final EdgeInsetsGeometry padding;
-  final BorderRadius? borderRadius;
-  final double? width;
-  final double? height;
-  final Color? borderColor;
-  final double borderWidth;
-  final double blurAmount;
   
+  /// Padding around the child
+  final EdgeInsetsGeometry padding;
+  
+  /// Border radius of the card
+  final BorderRadius borderRadius;
+  
+  /// Whether to apply blur effect
+  final bool applyBlur;
+  
+  /// Blur intensity
+  final double blur;
+  
+  /// Border opacity
+  final double borderOpacity;
+  
+  /// Background opacity
+  final double backgroundOpacity;
+  
+  /// Creates a glassmorphic card
   const GlassmorphicCard({
     required this.child,
     this.padding = const EdgeInsets.all(16),
-    this.borderRadius,
-    this.width,
-    this.height,
-    this.borderColor,
-    this.borderWidth = 1.0,
-    this.blurAmount = 10.0,
-    super.key,
-  });
+    this.borderRadius = const BorderRadius.all(Radius.circular(16)),
+    this.applyBlur = true,
+    this.blur = 10,
+    this.borderOpacity = 0.1,
+    this.backgroundOpacity = 0.2,
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final themeService = Provider.of<ThemeService>(context);
+    final isDarkMode = themeService.isDarkMode;
     final theme = Theme.of(context);
     
-    // Get appropriate colors for the current theme
-    final backgroundColor = isDark 
-        ? AppColors.darkSurface.withOpacity(0.5) // 225 16% 17% / 0.5 - dark card
-        : Colors.white.withOpacity(0.7);         // bg-white/70 - light card
-    
-    final border = isDark
-        ? borderColor ?? Colors.grey[800]!.withOpacity(0.5) // border-gray-800/50
-        : borderColor ?? Colors.white.withOpacity(0.5);     // border-white/50
-    
     return ClipRRect(
-      borderRadius: borderRadius ?? BorderRadius.circular(16),
+      borderRadius: borderRadius,
       child: BackdropFilter(
-        filter: ImageFilter.blur(
-          sigmaX: blurAmount,
-          sigmaY: blurAmount,
-        ),
+        filter: applyBlur
+            ? ImageFilter.blur(sigmaX: blur, sigmaY: blur)
+            : ImageFilter.blur(sigmaX: 0, sigmaY: 0),
         child: Container(
-          width: width,
-          height: height,
-          decoration: BoxDecoration(
-            color: backgroundColor,
-            borderRadius: borderRadius ?? BorderRadius.circular(16),
-            border: Border.all(
-              color: border,
-              width: borderWidth,
-            ),
-            boxShadow: isDark
-              ? [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.2),
-                    blurRadius: 8,
-                    offset: const Offset(0, 4),
-                  ),
-                ]
-              : [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
-                    blurRadius: 8,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
-          ),
           padding: padding,
+          decoration: BoxDecoration(
+            color: isDarkMode
+                ? theme.cardColor.withOpacity(backgroundOpacity)
+                : Colors.white.withOpacity(backgroundOpacity + 0.5),
+            borderRadius: borderRadius,
+            border: Border.all(
+              color: isDarkMode
+                  ? Colors.white.withOpacity(borderOpacity)
+                  : Colors.white.withOpacity(borderOpacity + 0.5),
+              width: 1.5,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: isDarkMode
+                    ? Colors.black.withOpacity(0.2)
+                    : Colors.black.withOpacity(0.05),
+                blurRadius: 8,
+                spreadRadius: 2,
+              ),
+            ],
+          ),
           child: child,
         ),
       ),
