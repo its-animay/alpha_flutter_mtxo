@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:mtxo_labs_edtech/routes.dart';
-import 'package:mtxo_labs_edtech/services/auth_service.dart';
-import 'package:mtxo_labs_edtech/services/theme_service.dart';
-import 'package:mtxo_labs_edtech/theme/app_theme.dart';
+import 'routes.dart';
+import 'services/auth_service.dart';
+import 'services/theme_service.dart';
+import 'theme/app_theme.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
