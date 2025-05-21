@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
-import 'package:mtxo_labs_edtech/theme/app_theme.dart';
+import '../theme/app_theme.dart';
 
 /// A widget that displays an animated gradient background.
 /// This creates a futuristic, dynamic background effect for the app.

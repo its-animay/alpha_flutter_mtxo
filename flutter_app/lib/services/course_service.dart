@@ -2,8 +2,8 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:mtxo_labs_edtech/models/course.dart';
-import 'package:mtxo_labs_edtech/config/api_config.dart';
+import '../models/course.dart';
+import '../config/api_config.dart';
 
 /// A service that handles course-related functionality
 class CourseService {
