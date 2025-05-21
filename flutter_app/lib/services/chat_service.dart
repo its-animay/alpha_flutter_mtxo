@@ -35,7 +35,7 @@ class ChatService {
         ),
       ];
     } catch (e) {
-      // Return a fallback message if there's an error
+      // Return a fallback message if there is an error
       return [
         ChatMessage(
           id: '1',

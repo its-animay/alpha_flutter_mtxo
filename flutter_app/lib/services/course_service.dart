@@ -25,7 +25,7 @@ class CourseService {
         return _getLocalCourses();
       }
     } catch (e) {
-      // Use local fallback data if there's an error
+      // Use local fallback data if there is an error
       return _getLocalCourses();
     }
   }
@@ -49,7 +49,7 @@ class CourseService {
         );
       }
     } catch (e) {
-      // Try to find the course in local data if there's an error
+      // Try to find the course in local data if there is an error
       try {
         final courses = await _getLocalCourses();
         return courses.firstWhere(
@@ -78,7 +78,7 @@ class CourseService {
         return courses.take(5).toList();
       }
     } catch (e) {
-      // Return a subset of local courses if there's an error
+      // Return a subset of local courses if there is an error
       final courses = await _getLocalCourses();
       return courses.take(5).toList();
     }
@@ -149,7 +149,7 @@ class CourseService {
         progressMap = jsonDecode(savedProgress) as Map<String, dynamic>;
       }
       
-      // Initialize course progress if it doesn't exist
+      // Initialize course progress if it does not exist
       if (!progressMap.containsKey(courseId)) {
         progressMap[courseId] = {
           'completedLessons': <String>[],

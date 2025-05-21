@@ -134,7 +134,7 @@ class _AnimatedGradientBackgroundState extends State<AnimatedGradientBackground>
       stops.add(stop);
     }
     
-    // Sort the stops to ensure they're in ascending order
+    // Sort the stops to ensure they are in ascending order
     stops.sort();
     return stops;
   }

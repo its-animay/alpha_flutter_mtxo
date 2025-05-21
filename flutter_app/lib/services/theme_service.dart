@@ -45,7 +45,7 @@ class ThemeService extends ChangeNotifier {
         notifyListeners();
       }
     } catch (e) {
-      // Default to system theme if there's an error
+      // Default to system theme if there is an error
       _themeMode = ThemeMode.system;
     }
   }
