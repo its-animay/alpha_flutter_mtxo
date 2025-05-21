@@ -208,10 +208,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           instructorName: course.instructor.name,
                           thumbnailUrl: course.thumbnail,
                           rating: course.rating,
-                          reviewCount: course.reviewCount,
-                          tags: course.tags,
-                          price: course.price,
-                          priceType: course.priceType,
+
                         );
                       },
                     ),
