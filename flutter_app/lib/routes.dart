@@ -21,6 +21,11 @@ class AppRouter {
       initialLocation: '/',
       debugLogDiagnostics: true,
       redirect: (context, state) {
+        // TESTING MODE: Comment this whole redirect section to bypass authentication
+        // This allows easier testing of theme toggling and UI features
+        
+        // Uncomment this block to require proper authentication
+        /*
         final bool isLoggedIn = authService.isAuthenticated;
         final bool isGoingToAuth = state.uri.path.startsWith('/auth');
         
@@ -33,8 +38,9 @@ class AppRouter {
         if (isLoggedIn && isGoingToAuth) {
           return '/';
         }
+        */
         
-        // No redirect needed
+        // No redirect needed - this enables free navigation for testing
         return null;
       },
       routes: [

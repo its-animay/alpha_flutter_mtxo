@@ -261,6 +261,8 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                                   onPressed: authService.isLoading ? null : _handleLogin,
                                   style: ElevatedButton.styleFrom(
                                     elevation: 3,
+                                    backgroundColor: theme.colorScheme.primary,
+                                    foregroundColor: Colors.white,
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(10),
                                     ),
@@ -281,6 +283,65 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                                             fontWeight: FontWeight.bold,
                                           ),
                                         ),
+                                ),
+                              ),
+                              
+                              // Quick Access for Testing
+                              const SizedBox(height: 16),
+                              Center(
+                                child: Column(
+                                  children: [
+                                    Text(
+                                      'Test Account',
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        color: theme.colorScheme.onSurface.withOpacity(0.6),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 8),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        TextButton(
+                                          onPressed: () {
+                                            _usernameController.text = 'test';
+                                            _passwordController.text = 'test123';
+                                            _handleLogin();
+                                          },
+                                          style: TextButton.styleFrom(
+                                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                            backgroundColor: theme.colorScheme.primaryContainer,
+                                          ),
+                                          child: Text(
+                                            'Quick Login',
+                                            style: TextStyle(
+                                              color: theme.colorScheme.primary,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ),
+                                        const SizedBox(width: 12),
+                                        TextButton(
+                                          onPressed: () {
+                                            // This bypasses all authentication and jumps straight to dashboard
+                                            // Used for quick testing of theme toggle and UI
+                                            context.go('/dashboard');
+                                          },
+                                          style: TextButton.styleFrom(
+                                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                            backgroundColor: Colors.amber.withOpacity(0.2),
+                                          ),
+                                          child: const Text(
+                                            'Skip Login',
+                                            style: TextStyle(
+                                              color: Colors.amber,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
                                 ),
                               ),
                             ],
