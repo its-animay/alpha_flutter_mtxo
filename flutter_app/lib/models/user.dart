@@ -6,10 +6,11 @@ class User {
   final String? fullName;
   final String? profileImage;
   final String? bio;
-  final Map<String, dynamic>? preferences;
-  final String? role;
+  final String role;
   final DateTime? createdAt;
-  final DateTime? lastLoginAt;
+  final Map<String, dynamic>? preferences;
+  final List<dynamic>? enrolledCourses;
+  final List<String>? achievements;
 
   User({
     required this.id,
@@ -18,30 +19,28 @@ class User {
     this.fullName,
     this.profileImage,
     this.bio,
-    this.preferences,
-    this.role,
+    required this.role,
     this.createdAt,
-    this.lastLoginAt,
+    this.preferences,
+    this.enrolledCourses,
+    this.achievements,
   });
 
   /// Create a User from JSON
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
-      id: json['id'] is String ? int.parse(json['id']) : json['id'],
+      id: json['id'],
       username: json['username'],
       email: json['email'],
       fullName: json['fullName'],
       profileImage: json['profileImage'],
       bio: json['bio'],
-      preferences: json['preferences'] != null 
-          ? Map<String, dynamic>.from(json['preferences']) 
-          : null,
-      role: json['role'],
-      createdAt: json['createdAt'] != null 
-          ? DateTime.parse(json['createdAt']) 
-          : null,
-      lastLoginAt: json['lastLoginAt'] != null 
-          ? DateTime.parse(json['lastLoginAt']) 
+      role: json['role'] ?? 'student',
+      createdAt: json['createdAt'] != null ? DateTime.parse(json['createdAt']) : null,
+      preferences: json['preferences'],
+      enrolledCourses: json['enrolledCourses'],
+      achievements: json['achievements'] != null 
+          ? List<String>.from(json['achievements']) 
           : null,
     );
   }
@@ -55,14 +54,15 @@ class User {
       'fullName': fullName,
       'profileImage': profileImage,
       'bio': bio,
-      'preferences': preferences,
       'role': role,
       'createdAt': createdAt?.toIso8601String(),
-      'lastLoginAt': lastLoginAt?.toIso8601String(),
+      'preferences': preferences,
+      'enrolledCourses': enrolledCourses,
+      'achievements': achievements,
     };
   }
 
-  /// Create a copy of this User with the given fields replaced
+  /// Create a copy of the user with updated fields
   User copyWith({
     int? id,
     String? username,
@@ -70,10 +70,11 @@ class User {
     String? fullName,
     String? profileImage,
     String? bio,
-    Map<String, dynamic>? preferences,
     String? role,
     DateTime? createdAt,
-    DateTime? lastLoginAt,
+    Map<String, dynamic>? preferences,
+    List<dynamic>? enrolledCourses,
+    List<String>? achievements,
   }) {
     return User(
       id: id ?? this.id,
@@ -82,15 +83,11 @@ class User {
       fullName: fullName ?? this.fullName,
       profileImage: profileImage ?? this.profileImage,
       bio: bio ?? this.bio,
-      preferences: preferences ?? this.preferences,
       role: role ?? this.role,
       createdAt: createdAt ?? this.createdAt,
-      lastLoginAt: lastLoginAt ?? this.lastLoginAt,
+      preferences: preferences ?? this.preferences,
+      enrolledCourses: enrolledCourses ?? this.enrolledCourses,
+      achievements: achievements ?? this.achievements,
     );
-  }
-
-  @override
-  String toString() {
-    return 'User(id: $id, username: $username, email: $email, fullName: $fullName)';
   }
 }

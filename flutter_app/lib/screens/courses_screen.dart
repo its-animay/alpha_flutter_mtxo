@@ -61,7 +61,7 @@ class _CoursesScreenState extends State<CoursesScreen> {
     });
     
     try {
-      final courses = await _courseService.getAllCourses();
+      final courses = await _courseService.getCourses();
       
       setState(() {
         _courses = courses;

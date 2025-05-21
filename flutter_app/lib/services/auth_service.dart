@@ -1,332 +1,508 @@
 import 'dart:convert';
-import 'dart:io';
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/user.dart';
 import '../config/api_config.dart';
 
-/// A service that handles user authentication
+/// Authentication service for handling user authentication
 class AuthService extends ChangeNotifier {
-  static const String _tokenKey = 'auth_token';
-  static const String _userKey = 'user_data';
-  
   User? _currentUser;
-  String? _token;
   bool _isLoading = false;
-  String? _error;
+  bool _isAuthenticated = false;
+  String? _authToken;
   
-  /// Current authenticated user
   User? get currentUser => _currentUser;
-  
-  /// Authentication token
-  String? get token => _token;
-  
-  /// Whether the user is authenticated
-  bool get isAuthenticated => _token != null && _currentUser != null;
-  
-  /// Whether the service is loading
   bool get isLoading => _isLoading;
+  bool get isAuthenticated => _isAuthenticated;
+  String? get authToken => _authToken;
   
-  /// Latest error message
-  String? get error => _error;
-  
-  /// Initialize the service
+  /// Initialize the auth service
   AuthService() {
-    _loadFromStorage();
-    
-    // Auto-login for testing immediately after constructor is called
-    // This allows quick testing of themes without going through login
-    Future.delayed(Duration.zero, () {
-      if (!isAuthenticated) {
-        print('🔑 Auto-login for testing activated');
-        signIn('test', 'test123');
-      }
-    });
+    // Load user from persistent storage on initialization
+    loadUserFromStorage();
   }
   
-  /// Sign in with username and password
-  Future<bool> signIn(String username, String password) async {
-    _setLoading(true);
-    _error = null;
-    
-    // DEVELOPER MODE: Bypass authentication for testing
-    // This allows you to test the app without an active backend
-    if (username == 'test' || password == 'test123') {
-      print('⚠️ DEVELOPER MODE: Authentication bypassed for testing');
-      
-      // Create a mock user for testing purposes
-      _token = 'mock-jwt-token-for-testing-only';
-      _currentUser = User(
-        id: 12345,
-        username: username.isEmpty ? 'testuser' : username,
-        email: 'test@mtxolabs.com',
-        fullName: 'Test User',
-        role: 'student',
-        profileImage: 'https://ui-avatars.com/api/?name=Test+User&background=random',
-        createdAt: DateTime.now(),
-        lastLoginAt: DateTime.now(),
-      );
-      
-      await _saveToStorage();
-      _setLoading(false);
-      return true;
-    }
+  /// Load user from persistent storage
+  Future<void> loadUserFromStorage() async {
+    _isLoading = true;
+    notifyListeners();
     
     try {
-      // Try the normal authentication flow if not using test credentials
-      final response = await http.post(
-        Uri.parse('${ApiConfig.baseUrl}/auth/login'),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({
-          'username': username,
-          'password': password,
-        }),
-      );
+      final prefs = await SharedPreferences.getInstance();
+      final userJson = prefs.getString('user');
+      final authToken = prefs.getString('auth_token');
       
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-        _token = data['token'];
-        _currentUser = User.fromJson(data['user']);
-        
-        await _saveToStorage();
-        _setLoading(false);
-        return true;
-      } else {
-        if (response.statusCode == 401) {
-          _error = 'Invalid username or password';
-        } else {
-          _error = 'Failed to sign in. Please try again.';
-        }
-        _setLoading(false);
-        return false;
+      if (userJson != null && authToken != null) {
+        _currentUser = User.fromJson(jsonDecode(userJson));
+        _authToken = authToken;
+        _isAuthenticated = true;
       }
     } catch (e) {
-      // If the API fails, also allow login with test credentials as a fallback
-      if (username.isNotEmpty || password.isNotEmpty) {
-        print('⚠️ API connection failed. Falling back to test mode.');
-        
-        // Create a mock user for testing
-        _token = 'mock-jwt-token-for-testing-only';
+      debugPrint('Error loading user from storage: $e');
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+  
+  /// Sign in user with username and password
+  Future<bool> signIn(String username, String password) async {
+    _isLoading = true;
+    notifyListeners();
+    
+    try {
+      if (ApiConfig.useMockData) {
+        // Mock sign in for development
+        await Future.delayed(const Duration(seconds: 1));
         _currentUser = User(
-          id: 12345,
-          username: username.isEmpty ? 'testuser' : username,
-          email: 'test@mtxolabs.com',
-          fullName: 'Test User',
+          id: 1,
+          username: username,
+          email: '$username@example.com',
+          fullName: 'MTXO Labs Student',
+          bio: 'Passionate about AI and machine learning, exploring new technologies and expanding my knowledge.',
           role: 'student',
-          profileImage: 'https://ui-avatars.com/api/?name=Test+User&background=random',
-          createdAt: DateTime.now(),
-          lastLoginAt: DateTime.now(),
+          createdAt: DateTime.now().subtract(const Duration(days: 120)),
+          preferences: {
+            'darkMode': true,
+            'notifications': {
+              'courseUpdates': true,
+              'assignmentReminders': true,
+              'communityActivity': false,
+            },
+          },
+          enrolledCourses: [
+            {
+              'courseId': '1',
+              'progress': 65,
+              'enrolledAt': DateTime.now().subtract(const Duration(days: 30)).toIso8601String(),
+            },
+            {
+              'courseId': '2',
+              'progress': 22,
+              'enrolledAt': DateTime.now().subtract(const Duration(days: 15)).toIso8601String(),
+            },
+          ],
+          achievements: [
+            'FIRST_LOGIN',
+            'FIRST_COURSE_COMPLETED',
+            'QUIZ_MASTER',
+          ],
         );
         
-        await _saveToStorage();
-        _setLoading(false);
-        return true;
-      }
-      
-      _error = 'Network error. Please check your connection. You can use "test" as username and "test123" as password for testing.';
-      _setLoading(false);
-      return false;
-    }
-  }
-  
-  /// Sign up with username, email, and password
-  Future<bool> signUp(
-    String username,
-    String email,
-    String password,
-    String fullName,
-  ) async {
-    _setLoading(true);
-    _error = null;
-    
-    try {
-      final response = await http.post(
-        Uri.parse('${ApiConfig.baseUrl}/auth/register'),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({
-          'username': username,
-          'email': email,
-          'password': password,
-          'fullName': fullName,
-        }),
-      );
-      
-      if (response.statusCode == 201) {
-        _setLoading(false);
-        return true;
-      } else {
-        if (response.statusCode == 409) {
-          _error = 'Username or email already exists';
-        } else {
-          _error = 'Failed to create account. Please try again.';
-        }
-        _setLoading(false);
-        return false;
-      }
-    } catch (e) {
-      _error = 'Network error. Please check your connection.';
-      _setLoading(false);
-      return false;
-    }
-  }
-  
-  /// Request password reset
-  Future<bool> forgotPassword(String email) async {
-    _setLoading(true);
-    _error = null;
-    
-    try {
-      final response = await http.post(
-        Uri.parse('${ApiConfig.baseUrl}/auth/forgot-password'),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({
-          'email': email,
-        }),
-      );
-      
-      if (response.statusCode == 200) {
-        _setLoading(false);
-        return true;
-      } else {
-        _error = 'Failed to process request. Please try again.';
-        _setLoading(false);
-        return false;
-      }
-    } catch (e) {
-      _error = 'Network error. Please check your connection.';
-      _setLoading(false);
-      return false;
-    }
-  }
-  
-  /// Sign out the current user
-  Future<void> signOut() async {
-    _token = null;
-    _currentUser = null;
-    await _clearStorage();
-    notifyListeners();
-  }
-  
-  /// Update the user's profile
-  Future<bool> updateProfile(Map<String, dynamic> userData, File? profileImage) async {
-    _setLoading(true);
-    _error = null;
-    
-    try {
-      if (profileImage != null) {
-        // Upload profile image
-        final imageUrl = await _uploadProfileImage(profileImage);
-        if (imageUrl != null) {
-          userData['profileImage'] = imageUrl;
-        }
-      }
-      
-      final response = await http.patch(
-        Uri.parse('${ApiConfig.baseUrl}/users/profile'),
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $_token',
-        },
-        body: jsonEncode(userData),
-      );
-      
-      if (response.statusCode == 200) {
-        final updatedUser = jsonDecode(response.body);
-        _currentUser = User.fromJson(updatedUser);
+        _authToken = 'mock-token-${DateTime.now().millisecondsSinceEpoch}';
+        _isAuthenticated = true;
         
-        await _saveToStorage();
-        _setLoading(false);
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString('user', jsonEncode(_currentUser!.toJson()));
+        await prefs.setString('auth_token', _authToken!);
+        
         return true;
       } else {
-        _error = 'Failed to update profile. Please try again.';
-        _setLoading(false);
-        return false;
+        // Real API signin for production
+        final response = await http.post(
+          Uri.parse('${ApiConfig.baseUrl}/auth/signin'),
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: jsonEncode({
+            'username': username,
+            'password': password,
+          }),
+        );
+        
+        if (response.statusCode == 200) {
+          final responseData = jsonDecode(response.body);
+          
+          _currentUser = User.fromJson(responseData['user']);
+          _authToken = responseData['token'];
+          _isAuthenticated = true;
+          
+          final prefs = await SharedPreferences.getInstance();
+          await prefs.setString('user', jsonEncode(_currentUser!.toJson()));
+          await prefs.setString('auth_token', _authToken!);
+          
+          return true;
+        } else {
+          return false;
+        }
       }
     } catch (e) {
-      _error = 'Network error. Please check your connection.';
-      _setLoading(false);
+      debugPrint('Error signing in: $e');
+      return false;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+  
+  /// Sign up a new user
+  Future<bool> signUp(String username, String email, String password) async {
+    _isLoading = true;
+    notifyListeners();
+    
+    try {
+      if (ApiConfig.useMockData) {
+        // Mock sign up for development
+        await Future.delayed(const Duration(seconds: 1));
+        _currentUser = User(
+          id: 1,
+          username: username,
+          email: email,
+          fullName: null,
+          bio: null,
+          role: 'student',
+          createdAt: DateTime.now(),
+        );
+        
+        _authToken = 'mock-token-${DateTime.now().millisecondsSinceEpoch}';
+        _isAuthenticated = true;
+        
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString('user', jsonEncode(_currentUser!.toJson()));
+        await prefs.setString('auth_token', _authToken!);
+        
+        return true;
+      } else {
+        // Real API signup for production
+        final response = await http.post(
+          Uri.parse('${ApiConfig.baseUrl}/auth/signup'),
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: jsonEncode({
+            'username': username,
+            'email': email,
+            'password': password,
+          }),
+        );
+        
+        if (response.statusCode == 201) {
+          final responseData = jsonDecode(response.body);
+          
+          _currentUser = User.fromJson(responseData['user']);
+          _authToken = responseData['token'];
+          _isAuthenticated = true;
+          
+          final prefs = await SharedPreferences.getInstance();
+          await prefs.setString('user', jsonEncode(_currentUser!.toJson()));
+          await prefs.setString('auth_token', _authToken!);
+          
+          return true;
+        } else {
+          return false;
+        }
+      }
+    } catch (e) {
+      debugPrint('Error signing up: $e');
+      return false;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+  
+  /// Sign out the user
+  Future<void> signOut() async {
+    _isLoading = true;
+    notifyListeners();
+    
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.remove('user');
+      await prefs.remove('auth_token');
+      
+      _currentUser = null;
+      _authToken = null;
+      _isAuthenticated = false;
+    } catch (e) {
+      debugPrint('Error signing out: $e');
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+  
+  /// Reset password
+  Future<bool> resetPassword(String email) async {
+    _isLoading = true;
+    notifyListeners();
+    
+    try {
+      if (ApiConfig.useMockData) {
+        // Mock password reset for development
+        await Future.delayed(const Duration(seconds: 1));
+        return true;
+      } else {
+        // Real API password reset for production
+        final response = await http.post(
+          Uri.parse('${ApiConfig.baseUrl}/auth/reset-password'),
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: jsonEncode({
+            'email': email,
+          }),
+        );
+        
+        return response.statusCode == 200;
+      }
+    } catch (e) {
+      debugPrint('Error resetting password: $e');
+      return false;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+  
+  /// Update user profile
+  Future<bool> updateProfile(Map<String, dynamic> userData) async {
+    if (_currentUser == null || _authToken == null) {
       return false;
     }
-  }
-  
-  /// Upload a profile image
-  Future<String?> _uploadProfileImage(File image) async {
+    
+    _isLoading = true;
+    notifyListeners();
+    
     try {
-      final request = http.MultipartRequest(
-        'POST',
-        Uri.parse('${ApiConfig.baseUrl}/users/upload-avatar'),
-      );
-      
-      request.headers['Authorization'] = 'Bearer $_token';
-      request.files.add(await http.MultipartFile.fromPath('avatar', image.path));
-      
-      final streamedResponse = await request.send();
-      final response = await http.Response.fromStream(streamedResponse);
-      
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-        return data['imageUrl'];
+      if (ApiConfig.useMockData) {
+        // Mock profile update for development
+        await Future.delayed(const Duration(seconds: 1));
+        
+        // Update user object with new data
+        _currentUser = _currentUser!.copyWith(
+          fullName: userData['fullName'] ?? _currentUser!.fullName,
+          email: userData['email'] ?? _currentUser!.email,
+          bio: userData['bio'] ?? _currentUser!.bio,
+        );
+        
+        // Save updated user to shared preferences
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString('user', jsonEncode(_currentUser!.toJson()));
+        
+        return true;
+      } else {
+        // Real API profile update for production
+        final response = await http.patch(
+          Uri.parse('${ApiConfig.baseUrl}/users/profile'),
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $_authToken',
+          },
+          body: jsonEncode(userData),
+        );
+        
+        if (response.statusCode == 200) {
+          final responseData = jsonDecode(response.body);
+          _currentUser = User.fromJson(responseData);
+          
+          // Save updated user to shared preferences
+          final prefs = await SharedPreferences.getInstance();
+          await prefs.setString('user', jsonEncode(_currentUser!.toJson()));
+          
+          return true;
+        } else {
+          return false;
+        }
       }
     } catch (e) {
-      // Handle error silently
+      debugPrint('Error updating profile: $e');
+      return false;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+  
+  /// Update user preferences
+  Future<bool> updatePreferences(Map<String, dynamic> preferences) async {
+    if (_currentUser == null || _authToken == null) {
+      return false;
     }
     
-    return null;
-  }
-  
-  /// Load user data from local storage
-  Future<void> _loadFromStorage() async {
+    _isLoading = true;
+    notifyListeners();
+    
     try {
-      final prefs = await SharedPreferences.getInstance();
-      
-      final savedToken = prefs.getString(_tokenKey);
-      final savedUserJson = prefs.getString(_userKey);
-      
-      if (savedToken != null && savedUserJson != null) {
-        _token = savedToken;
-        _currentUser = User.fromJson(jsonDecode(savedUserJson));
-        notifyListeners();
+      if (ApiConfig.useMockData) {
+        // Mock preferences update for development
+        await Future.delayed(const Duration(seconds: 1));
+        
+        // Current preferences
+        final currentPreferences = _currentUser!.preferences ?? {};
+        
+        // Update user object with new preferences
+        _currentUser = _currentUser!.copyWith(
+          preferences: {
+            ...currentPreferences,
+            ...preferences,
+          },
+        );
+        
+        // Save updated user to shared preferences
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString('user', jsonEncode(_currentUser!.toJson()));
+        
+        return true;
+      } else {
+        // Real API preferences update for production
+        final response = await http.patch(
+          Uri.parse('${ApiConfig.baseUrl}/users/preferences'),
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $_authToken',
+          },
+          body: jsonEncode(preferences),
+        );
+        
+        if (response.statusCode == 200) {
+          final responseData = jsonDecode(response.body);
+          _currentUser = User.fromJson(responseData);
+          
+          // Save updated user to shared preferences
+          final prefs = await SharedPreferences.getInstance();
+          await prefs.setString('user', jsonEncode(_currentUser!.toJson()));
+          
+          return true;
+        } else {
+          return false;
+        }
       }
     } catch (e) {
-      // Handle error silently
+      debugPrint('Error updating preferences: $e');
+      return false;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
     }
   }
   
-  /// Save user data to local storage
-  Future<void> _saveToStorage() async {
+  /// Change password
+  Future<bool> changePassword(String currentPassword, String newPassword) async {
+    if (_currentUser == null || _authToken == null) {
+      return false;
+    }
+    
+    _isLoading = true;
+    notifyListeners();
+    
     try {
-      final prefs = await SharedPreferences.getInstance();
-      
-      if (_token != null && _currentUser != null) {
-        await prefs.setString(_tokenKey, _token!);
-        await prefs.setString(_userKey, jsonEncode(_currentUser!.toJson()));
+      if (ApiConfig.useMockData) {
+        // Mock password change for development
+        await Future.delayed(const Duration(seconds: 1));
+        return true;
+      } else {
+        // Real API password change for production
+        final response = await http.post(
+          Uri.parse('${ApiConfig.baseUrl}/auth/change-password'),
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $_authToken',
+          },
+          body: jsonEncode({
+            'currentPassword': currentPassword,
+            'newPassword': newPassword,
+          }),
+        );
+        
+        return response.statusCode == 200;
       }
     } catch (e) {
-      // Handle error silently
+      debugPrint('Error changing password: $e');
+      return false;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
     }
   }
   
-  /// Clear user data from local storage
-  Future<void> _clearStorage() async {
+  /// Check if the user has a specific achievement
+  bool hasAchievement(String achievementId) {
+    if (_currentUser == null || _currentUser!.achievements == null) {
+      return false;
+    }
+    return _currentUser!.achievements!.contains(achievementId);
+  }
+  
+  /// Get all user achievements
+  List<String> getUserAchievements() {
+    if (_currentUser == null || _currentUser!.achievements == null) {
+      return [];
+    }
+    return _currentUser!.achievements!;
+  }
+  
+  /// Check if a dark mode preference is set
+  bool isDarkModeEnabled() {
+    if (_currentUser == null || _currentUser!.preferences == null) {
+      return false;
+    }
+    return _currentUser!.preferences!['darkMode'] ?? false;
+  }
+
+  /// Update dark mode preference
+  Future<bool> setDarkModeEnabled(bool enabled) {
+    return updatePreferences({'darkMode': enabled});
+  }
+  
+  /// Quick login for development (bypass authentication for testing)
+  Future<bool> quickLogin() async {
+    _isLoading = true;
+    notifyListeners();
+    
     try {
+      // Create a mock user for testing
+      _currentUser = User(
+        id: 1,
+        username: 'mtxo_student',
+        email: 'student@mtxolabs.com',
+        fullName: 'MTXO Labs Student',
+        profileImage: 'https://randomuser.me/api/portraits/men/44.jpg',
+        bio: 'Passionate about AI and machine learning, exploring new technologies and expanding my knowledge through MTXO Labs courses.',
+        role: 'student',
+        createdAt: DateTime.now().subtract(const Duration(days: 120)),
+        preferences: {
+          'darkMode': true,
+          'notifications': {
+            'courseUpdates': true,
+            'assignmentReminders': true,
+            'communityActivity': false,
+          },
+        },
+        enrolledCourses: [
+          {
+            'courseId': '1',
+            'progress': 65,
+            'enrolledAt': DateTime.now().subtract(const Duration(days: 30)).toIso8601String(),
+          },
+          {
+            'courseId': '2',
+            'progress': 22,
+            'enrolledAt': DateTime.now().subtract(const Duration(days: 15)).toIso8601String(),
+          },
+        ],
+        achievements: [
+          'FIRST_LOGIN',
+          'FIRST_COURSE_COMPLETED',
+          'QUIZ_MASTER',
+        ],
+      );
+      
+      _authToken = 'mock-token-${DateTime.now().millisecondsSinceEpoch}';
+      _isAuthenticated = true;
+      
       final prefs = await SharedPreferences.getInstance();
-      await prefs.remove(_tokenKey);
-      await prefs.remove(_userKey);
+      await prefs.setString('user', jsonEncode(_currentUser!.toJson()));
+      await prefs.setString('auth_token', _authToken!);
+      
+      return true;
     } catch (e) {
-      // Handle error silently
+      debugPrint('Error in quick login: $e');
+      return false;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
     }
-  }
-  
-  /// Set loading state and notify listeners
-  void _setLoading(bool isLoading) {
-    _isLoading = isLoading;
-    notifyListeners();
-  }
-  
-  /// Clear the current error
-  void clearError() {
-    _error = null;
-    notifyListeners();
   }
 }

@@ -16,10 +16,10 @@ class Course {
   final String duration;
   final int totalLessons;
   final String totalDuration;
-  final List<String>? whatYoullLearn;
-  final List<String>? prerequisites;
+  final List<String> whatYoullLearn;
+  final List<String> prerequisites;
   final List<CourseModule>? modules;
-  final List<CourseReview>? reviews;
+  final List<CourseReview> reviews;
   final CourseEnrollmentOptions enrollmentOptions;
 
   Course({
@@ -39,17 +39,17 @@ class Course {
     required this.duration,
     required this.totalLessons,
     required this.totalDuration,
-    this.whatYoullLearn,
-    this.prerequisites,
+    required this.whatYoullLearn,
+    required this.prerequisites,
     this.modules,
-    this.reviews,
+    required this.reviews,
     required this.enrollmentOptions,
   });
 
   /// Create a Course from JSON
   factory Course.fromJson(Map<String, dynamic> json) {
     return Course(
-      id: json['id'].toString(),
+      id: json['id'],
       title: json['title'],
       subtitle: json['subtitle'],
       description: json['description'],
@@ -65,21 +65,16 @@ class Course {
       duration: json['duration'],
       totalLessons: json['totalLessons'],
       totalDuration: json['totalDuration'],
-      whatYoullLearn: json['whatYoullLearn'] != null
-          ? List<String>.from(json['whatYoullLearn'])
-          : null,
-      prerequisites: json['prerequisites'] != null
-          ? List<String>.from(json['prerequisites'])
-          : null,
+      whatYoullLearn: List<String>.from(json['whatYoullLearn']),
+      prerequisites: List<String>.from(json['prerequisites']),
       modules: json['modules'] != null
           ? List<CourseModule>.from(
-              json['modules'].map((x) => CourseModule.fromJson(x)))
+              json['modules'].map((m) => CourseModule.fromJson(m)))
           : null,
-      reviews: json['reviews'] != null
-          ? List<CourseReview>.from(
-              json['reviews'].map((x) => CourseReview.fromJson(x)))
-          : null,
-      enrollmentOptions: CourseEnrollmentOptions.fromJson(json['enrollmentOptions']),
+      reviews: List<CourseReview>.from(
+          json['reviews'].map((r) => CourseReview.fromJson(r))),
+      enrollmentOptions:
+          CourseEnrollmentOptions.fromJson(json['enrollmentOptions']),
     );
   }
 
@@ -104,15 +99,10 @@ class Course {
       'totalDuration': totalDuration,
       'whatYoullLearn': whatYoullLearn,
       'prerequisites': prerequisites,
-      'modules': modules?.map((x) => x.toJson()).toList(),
-      'reviews': reviews?.map((x) => x.toJson()).toList(),
+      'modules': modules?.map((m) => m.toJson()).toList(),
+      'reviews': reviews.map((r) => r.toJson()).toList(),
       'enrollmentOptions': enrollmentOptions.toJson(),
     };
-  }
-
-  @override
-  String toString() {
-    return 'Course(id: $id, title: $title, instructor: ${instructor.name})';
   }
 }
 
@@ -121,21 +111,21 @@ class Instructor {
   final String id;
   final String name;
   final String avatar;
-  final String? title;
-  final String? bio;
+  final String title;
+  final String bio;
 
   Instructor({
     required this.id,
     required this.name,
     required this.avatar,
-    this.title,
-    this.bio,
+    required this.title,
+    required this.bio,
   });
 
   /// Create an Instructor from JSON
   factory Instructor.fromJson(Map<String, dynamic> json) {
     return Instructor(
-      id: json['id'].toString(),
+      id: json['id'],
       name: json['name'],
       avatar: json['avatar'],
       title: json['title'],
@@ -155,7 +145,7 @@ class Instructor {
   }
 }
 
-/// Course module model representing a section of a course
+/// CourseModule model representing a module in a course
 class CourseModule {
   final String id;
   final String title;
@@ -176,10 +166,10 @@ class CourseModule {
   /// Create a CourseModule from JSON
   factory CourseModule.fromJson(Map<String, dynamic> json) {
     return CourseModule(
-      id: json['id'].toString(),
+      id: json['id'],
       title: json['title'],
       lessons: List<CourseLessonItem>.from(
-          json['lessons'].map((x) => CourseLessonItem.fromJson(x))),
+          json['lessons'].map((l) => CourseLessonItem.fromJson(l))),
       isFree: json['isFree'],
       description: json['description'],
       duration: json['duration'],
@@ -191,7 +181,7 @@ class CourseModule {
     return {
       'id': id,
       'title': title,
-      'lessons': lessons.map((x) => x.toJson()).toList(),
+      'lessons': lessons.map((l) => l.toJson()).toList(),
       'isFree': isFree,
       'description': description,
       'duration': duration,
@@ -199,7 +189,7 @@ class CourseModule {
   }
 }
 
-/// Course lesson model representing a single lesson in a course module
+/// CourseLessonItem model representing a lesson in a course module
 class CourseLessonItem {
   final String id;
   final String title;
@@ -224,7 +214,7 @@ class CourseLessonItem {
   /// Create a CourseLessonItem from JSON
   factory CourseLessonItem.fromJson(Map<String, dynamic> json) {
     return CourseLessonItem(
-      id: json['id'].toString(),
+      id: json['id'],
       title: json['title'],
       duration: json['duration'],
       isFree: json['isFree'],
@@ -233,7 +223,7 @@ class CourseLessonItem {
       description: json['description'],
       resources: json['resources'] != null
           ? List<CourseResource>.from(
-              json['resources'].map((x) => CourseResource.fromJson(x)))
+              json['resources'].map((r) => CourseResource.fromJson(r)))
           : null,
     );
   }
@@ -248,12 +238,12 @@ class CourseLessonItem {
       'completed': completed,
       'videoUrl': videoUrl,
       'description': description,
-      'resources': resources?.map((x) => x.toJson()).toList(),
+      'resources': resources?.map((r) => r.toJson()).toList(),
     };
   }
 }
 
-/// Course resource model representing additional materials for a lesson
+/// CourseResource model representing a resource for a lesson
 class CourseResource {
   final String id;
   final String title;
@@ -270,7 +260,7 @@ class CourseResource {
   /// Create a CourseResource from JSON
   factory CourseResource.fromJson(Map<String, dynamic> json) {
     return CourseResource(
-      id: json['id'].toString(),
+      id: json['id'],
       title: json['title'],
       type: json['type'],
       url: json['url'],
@@ -288,7 +278,7 @@ class CourseResource {
   }
 }
 
-/// Course review model representing a user review of a course
+/// CourseReview model representing a review for a course
 class CourseReview {
   final String id;
   final String userName;
@@ -309,7 +299,7 @@ class CourseReview {
   /// Create a CourseReview from JSON
   factory CourseReview.fromJson(Map<String, dynamic> json) {
     return CourseReview(
-      id: json['id'].toString(),
+      id: json['id'],
       userName: json['userName'],
       userAvatar: json['userAvatar'],
       rating: json['rating'].toDouble(),
@@ -331,7 +321,7 @@ class CourseReview {
   }
 }
 
-/// Course enrollment options model
+/// CourseEnrollmentOptions model representing enrollment options for a course
 class CourseEnrollmentOptions {
   final bool freeTrial;
   final CourseOneTimeEnrollment oneTime;
@@ -362,7 +352,7 @@ class CourseEnrollmentOptions {
   }
 }
 
-/// One-time enrollment option for a course
+/// CourseOneTimeEnrollment model representing one-time enrollment options
 class CourseOneTimeEnrollment {
   final double price;
   final double? discountedPrice;
@@ -376,9 +366,8 @@ class CourseOneTimeEnrollment {
   factory CourseOneTimeEnrollment.fromJson(Map<String, dynamic> json) {
     return CourseOneTimeEnrollment(
       price: json['price'].toDouble(),
-      discountedPrice: json['discountedPrice'] != null 
-          ? json['discountedPrice'].toDouble() 
-          : null,
+      discountedPrice:
+          json['discountedPrice'] != null ? json['discountedPrice'].toDouble() : null,
     );
   }
 
@@ -391,7 +380,7 @@ class CourseOneTimeEnrollment {
   }
 }
 
-/// Subscription enrollment option for a course
+/// CourseSubscriptionEnrollment model representing subscription enrollment options
 class CourseSubscriptionEnrollment {
   final double monthly;
   final double yearly;
