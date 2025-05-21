@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mtxo_labs_edtech/screens/auth/login_screen.dart';
-import 'package:mtxo_labs_edtech/screens/auth/signup_screen.dart';
-import 'package:mtxo_labs_edtech/screens/auth/forgot_password_screen.dart';
-import 'package:mtxo_labs_edtech/screens/dashboard_screen.dart';
-import 'package:mtxo_labs_edtech/screens/courses_screen.dart';
-import 'package:mtxo_labs_edtech/screens/course_detail_screen.dart';
-import 'package:mtxo_labs_edtech/screens/lesson_screen.dart';
-import 'package:mtxo_labs_edtech/screens/profile_screen.dart';
-import 'package:mtxo_labs_edtech/screens/helpdesk_screen.dart';
-import 'package:mtxo_labs_edtech/widgets/main_layout.dart';
-import 'package:mtxo_labs_edtech/services/auth_service.dart';
+import 'screens/auth/login_screen.dart';
+import 'screens/auth/signup_screen.dart';
+import 'screens/auth/forgot_password_screen.dart';
+import 'screens/dashboard_screen.dart';
+import 'screens/courses_screen.dart';
+import 'screens/course_detail_screen.dart';
+import 'screens/lesson_screen.dart';
+import 'screens/profile_screen.dart';
+import 'screens/helpdesk_screen.dart';
+import 'widgets/main_layout.dart';
+import 'services/auth_service.dart';
 import 'package:provider/provider.dart';
 
 class AppRouter {
