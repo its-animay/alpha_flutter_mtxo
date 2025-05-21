@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mtxo_labs_edtech/models/course.dart';
-import 'package:mtxo_labs_edtech/services/course_service.dart';
-import 'package:mtxo_labs_edtech/theme/app_theme.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+import '../services/course_service.dart';
+import '../models/course.dart';
+import '../theme/app_theme.dart';
+import '../widgets/glassmorphic_card.dart';
+import '../widgets/animated_gradient_background.dart';
 
 class CoursesScreen extends StatefulWidget {
   const CoursesScreen({super.key});
@@ -12,42 +13,45 @@ class CoursesScreen extends StatefulWidget {
   State<CoursesScreen> createState() => _CoursesScreenState();
 }
 
-class _CoursesScreenState extends State<CoursesScreen> with SingleTickerProviderStateMixin {
+class _CoursesScreenState extends State<CoursesScreen> {
   final CourseService _courseService = CourseService();
   final TextEditingController _searchController = TextEditingController();
   
-  List<Course> _allCourses = [];
+  List<Course> _courses = [];
   List<Course> _filteredCourses = [];
   bool _isLoading = true;
-  bool _isSearching = false;
+  String _searchQuery = '';
   
   // Filter states
   String _selectedSkillLevel = 'All';
+  final List<String> _selectedTags = [];
   String _selectedPriceType = 'All';
   String _selectedDuration = 'All';
-  List<String> _selectedTags = [];
   
   // Available filter options
   final List<String> _skillLevels = ['All', 'Beginner', 'Intermediate', 'Advanced', 'All Levels'];
+  final List<String> _tags = ['GenAI', 'Python', 'MLOps', 'RealWorld', 'Agents', 'LLMs', 'Computer Vision', 'NLP'];
   final List<String> _priceTypes = ['All', 'Free', 'Paid'];
   final List<String> _durations = ['All', 'Short', 'Medium', 'Long'];
-  final List<String> _availableTags = [
-    'GenAI', 'Python', 'MLOps', 'RealWorld', 'Agents', 'LLMs', 'Computer Vision', 'NLP'
-  ];
   
-  late TabController _tabController;
+  bool _isFilterDrawerOpen = false;
   
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 3, vsync: this);
     _loadCourses();
+    
+    _searchController.addListener(() {
+      setState(() {
+        _searchQuery = _searchController.text;
+        _applyFilters();
+      });
+    });
   }
   
   @override
   void dispose() {
     _searchController.dispose();
-    _tabController.dispose();
     super.dispose();
   }
   
@@ -57,63 +61,70 @@ class _CoursesScreenState extends State<CoursesScreen> with SingleTickerProvider
     });
     
     try {
-      final courses = await _courseService.getCourses();
+      final courses = await _courseService.getAllCourses();
       
       setState(() {
-        _allCourses = courses;
-        _filteredCourses = courses;
+        _courses = courses;
+        _filteredCourses = List.from(courses);
         _isLoading = false;
       });
     } catch (e) {
-      debugPrint('Error loading courses: $e');
       setState(() {
         _isLoading = false;
       });
+      
+      // Show error message
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Failed to load courses: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
     }
-  }
-  
-  void _handleSearch(String query) {
-    if (query.isEmpty) {
-      setState(() {
-        _isSearching = false;
-        _filteredCourses = _allCourses;
-      });
-      return;
-    }
-    
-    setState(() {
-      _isSearching = true;
-      _filteredCourses = _allCourses.where((course) {
-        return course.title.toLowerCase().contains(query.toLowerCase()) ||
-               course.description.toLowerCase().contains(query.toLowerCase()) ||
-               course.instructor.name.toLowerCase().contains(query.toLowerCase());
-      }).toList();
-    });
   }
   
   void _applyFilters() {
-    List<Course> filtered = _allCourses;
+    List<Course> filtered = List.from(_courses);
+    
+    // Apply search query
+    if (_searchQuery.isNotEmpty) {
+      final query = _searchQuery.toLowerCase();
+      filtered = filtered.where((course) {
+        return course.title.toLowerCase().contains(query) ||
+               course.subtitle.toLowerCase().contains(query) ||
+               course.description.toLowerCase().contains(query) ||
+               course.instructor.name.toLowerCase().contains(query);
+      }).toList();
+    }
     
     // Apply skill level filter
     if (_selectedSkillLevel != 'All') {
-      filtered = filtered.where((course) => course.skillLevel == _selectedSkillLevel).toList();
-    }
-    
-    // Apply price type filter
-    if (_selectedPriceType != 'All') {
-      filtered = filtered.where((course) => course.priceType == _selectedPriceType).toList();
-    }
-    
-    // Apply duration filter
-    if (_selectedDuration != 'All') {
-      filtered = filtered.where((course) => course.duration == _selectedDuration).toList();
+      filtered = filtered.where((course) => 
+        course.skillLevel == _selectedSkillLevel).toList();
     }
     
     // Apply tags filter
     if (_selectedTags.isNotEmpty) {
       filtered = filtered.where((course) {
-        return _selectedTags.any((tag) => course.tags.contains(tag));
+        for (final tag in _selectedTags) {
+          if (course.tags.contains(tag)) {
+            return true;
+          }
+        }
+        return false;
       }).toList();
+    }
+    
+    // Apply price type filter
+    if (_selectedPriceType != 'All') {
+      filtered = filtered.where((course) => 
+        course.priceType == _selectedPriceType).toList();
+    }
+    
+    // Apply duration filter
+    if (_selectedDuration != 'All') {
+      filtered = filtered.where((course) => 
+        course.duration == _selectedDuration).toList();
     }
     
     setState(() {
@@ -121,215 +132,359 @@ class _CoursesScreenState extends State<CoursesScreen> with SingleTickerProvider
     });
   }
   
+  void _toggleFilterDrawer() {
+    setState(() {
+      _isFilterDrawerOpen = !_isFilterDrawerOpen;
+    });
+  }
+  
   void _resetFilters() {
     setState(() {
       _selectedSkillLevel = 'All';
+      _selectedTags.clear();
       _selectedPriceType = 'All';
       _selectedDuration = 'All';
-      _selectedTags = [];
-      _filteredCourses = _allCourses;
       _searchController.clear();
-      _isSearching = false;
+      _searchQuery = '';
     });
+    
+    _applyFilters();
+  }
+  
+  void _toggleTagFilter(String tag) {
+    setState(() {
+      if (_selectedTags.contains(tag)) {
+        _selectedTags.remove(tag);
+      } else {
+        _selectedTags.add(tag);
+      }
+    });
+    
+    _applyFilters();
   }
   
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
     
     return Scaffold(
-      appBar: AppBar(
-        title: _isSearching
-            ? TextField(
-                controller: _searchController,
-                autofocus: true,
-                decoration: InputDecoration(
-                  hintText: 'Search courses...',
-                  hintStyle: TextStyle(color: theme.colorScheme.onSurface.withOpacity(0.6)),
-                  border: InputBorder.none,
+      body: AnimatedGradientBackground(
+        child: SafeArea(
+          child: Stack(
+            children: [
+              // Main content
+              Column(
+                children: [
+                  // Search and filter bar
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+                    child: _buildSearchBar(theme),
+                  ),
+                  
+                  // Active filters chips
+                  if (_hasActiveFilters())
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: _buildActiveFilters(theme),
+                    ),
+                  
+                  // Course grid
+                  Expanded(
+                    child: _isLoading
+                        ? const Center(child: CircularProgressIndicator())
+                        : _filteredCourses.isEmpty
+                            ? _buildEmptyState(theme)
+                            : _buildCourseGrid(theme),
+                  ),
+                ],
+              ),
+              
+              // Filter drawer
+              AnimatedPositioned(
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.easeInOut,
+                right: _isFilterDrawerOpen ? 0 : -300,
+                top: 0,
+                bottom: 0,
+                width: 300,
+                child: GestureDetector(
+                  onTap: () {}, // Prevent tap through
+                  child: _buildFilterDrawer(theme),
                 ),
-                style: TextStyle(color: theme.colorScheme.onSurface),
-                onChanged: _handleSearch,
-              )
-            : const Text('Explore Courses'),
-        actions: [
-          // Search button
-          IconButton(
-            icon: Icon(_isSearching ? Icons.close : Icons.search),
-            onPressed: () {
-              setState(() {
-                _isSearching = !_isSearching;
-                if (!_isSearching) {
-                  _searchController.clear();
-                  _filteredCourses = _allCourses;
-                }
-              });
-            },
+              ),
+              
+              // Overlay when filter drawer is open
+              if (_isFilterDrawerOpen)
+                Positioned.fill(
+                  child: GestureDetector(
+                    onTap: _toggleFilterDrawer,
+                    child: Container(
+                      color: Colors.black.withOpacity(0.5),
+                    ),
+                  ),
+                ),
+            ],
           ),
+        ),
+      ),
+    );
+  }
+  
+  Widget _buildSearchBar(ThemeData theme) {
+    return GlassmorphicCard(
+      padding: const EdgeInsets.all(8),
+      child: Row(
+        children: [
+          // Search field
+          Expanded(
+            child: TextField(
+              controller: _searchController,
+              decoration: InputDecoration(
+                hintText: 'Search courses, instructors...',
+                prefixIcon: const Icon(Icons.search),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide.none,
+                ),
+                filled: true,
+                fillColor: theme.colorScheme.surface,
+                contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+              ),
+              style: TextStyle(
+                color: theme.colorScheme.onSurface,
+              ),
+            ),
+          ),
+          
+          const SizedBox(width: 8),
+          
           // Filter button
-          IconButton(
-            icon: const Icon(Icons.filter_list),
-            onPressed: () {
-              _showFilterBottomSheet(context);
-            },
+          ElevatedButton.icon(
+            onPressed: _toggleFilterDrawer,
+            icon: const Icon(Icons.tune),
+            label: const Text('Filter'),
+            style: ElevatedButton.styleFrom(
+              foregroundColor: _hasActiveFilters() 
+                  ? Colors.white 
+                  : theme.colorScheme.primary,
+              backgroundColor: _hasActiveFilters() 
+                  ? theme.colorScheme.primary 
+                  : theme.colorScheme.primaryContainer.withOpacity(0.5),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              elevation: 0,
+            ),
           ),
         ],
-        bottom: TabBar(
-          controller: _tabController,
-          tabs: const [
-            Tab(text: 'All'),
-            Tab(text: 'Popular'),
-            Tab(text: 'New'),
-          ],
-          indicatorColor: theme.colorScheme.primary,
-          labelColor: theme.colorScheme.primary,
-          unselectedLabelColor: theme.colorScheme.onSurface.withOpacity(0.7),
-        ),
       ),
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : TabBarView(
-              controller: _tabController,
-              children: [
-                // All Courses Tab
-                _buildCoursesList(_filteredCourses),
-                
-                // Popular Courses Tab (would normally sort by popularity)
-                _buildCoursesList(_filteredCourses
-                    .where((course) => course.studentsEnrolled > 500)
-                    .toList()
-                    ..sort((a, b) => b.rating.compareTo(a.rating))),
-                
-                // New Courses Tab (would normally sort by date)
-                _buildCoursesList(_filteredCourses.take(5).toList()),
-              ],
-            ),
     );
   }
   
-  Widget _buildCoursesList(List<Course> courses) {
-    if (courses.isEmpty) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+  Widget _buildActiveFilters(ThemeData theme) {
+    return SizedBox(
+      height: 40,
+      child: ListView(
+        scrollDirection: Axis.horizontal,
+        children: [
+          // Level filter
+          if (_selectedSkillLevel != 'All')
+            _buildFilterChip(
+              theme,
+              label: 'Level: $_selectedSkillLevel',
+              onRemove: () {
+                setState(() {
+                  _selectedSkillLevel = 'All';
+                });
+                _applyFilters();
+              },
+            ),
+          
+          // Tags filters
+          ..._selectedTags.map(
+            (tag) => _buildFilterChip(
+              theme,
+              label: tag,
+              onRemove: () => _toggleTagFilter(tag),
+            ),
+          ),
+          
+          // Price filter
+          if (_selectedPriceType != 'All')
+            _buildFilterChip(
+              theme,
+              label: 'Price: $_selectedPriceType',
+              onRemove: () {
+                setState(() {
+                  _selectedPriceType = 'All';
+                });
+                _applyFilters();
+              },
+            ),
+          
+          // Duration filter
+          if (_selectedDuration != 'All')
+            _buildFilterChip(
+              theme,
+              label: 'Duration: $_selectedDuration',
+              onRemove: () {
+                setState(() {
+                  _selectedDuration = 'All';
+                });
+                _applyFilters();
+              },
+            ),
+          
+          // Clear all filters
+          if (_hasActiveFilters())
+            Padding(
+              padding: const EdgeInsets.only(left: 8),
+              child: GestureDetector(
+                onTap: _resetFilters,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.error.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(
+                      color: theme.colorScheme.error.withOpacity(0.3),
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      Text(
+                        'Clear All',
+                        style: TextStyle(
+                          color: theme.colorScheme.error,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 12,
+                        ),
+                      ),
+                      const SizedBox(width: 4),
+                      Icon(
+                        Icons.close,
+                        size: 16,
+                        color: theme.colorScheme.error,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+  
+  Widget _buildFilterChip(
+    ThemeData theme, {
+    required String label,
+    required VoidCallback onRemove,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.only(right: 8),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        decoration: BoxDecoration(
+          color: theme.colorScheme.primary.withOpacity(0.1),
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: theme.colorScheme.primary.withOpacity(0.3),
+          ),
+        ),
+        child: Row(
           children: [
-            Icon(
-              Icons.search_off,
-              size: 64,
-              color: Theme.of(context).colorScheme.primary.withOpacity(0.5),
-            ),
-            const SizedBox(height: 16),
             Text(
-              'No courses found',
-              style: AppTextStyles.heading4,
+              label,
+              style: TextStyle(
+                color: theme.colorScheme.primary,
+                fontWeight: FontWeight.bold,
+                fontSize: 12,
+              ),
             ),
-            const SizedBox(height: 8),
-            Text(
-              'Try adjusting your filters',
-              style: AppTextStyles.bodyMedium,
-            ),
-            const SizedBox(height: 24),
-            ElevatedButton(
-              onPressed: _resetFilters,
-              child: const Text('Reset Filters'),
+            const SizedBox(width: 4),
+            GestureDetector(
+              onTap: onRemove,
+              child: Icon(
+                Icons.close,
+                size: 16,
+                color: theme.colorScheme.primary,
+              ),
             ),
           ],
         ),
-      );
-    }
-    
-    return RefreshIndicator(
-      onRefresh: _loadCourses,
-      child: ListView.builder(
-        padding: const EdgeInsets.all(16),
-        itemCount: courses.length,
-        itemBuilder: (context, index) {
-          final course = courses[index];
-          return _buildCourseCard(course);
-        },
       ),
     );
   }
   
-  Widget _buildCourseCard(Course course) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-    
-    return Card(
-      margin: const EdgeInsets.only(bottom: 16),
-      clipBehavior: Clip.antiAlias,
-      elevation: 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
+  Widget _buildCourseGrid(ThemeData theme) {
+    return GridView.builder(
+      padding: const EdgeInsets.all(16),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        childAspectRatio: 0.75,
+        crossAxisSpacing: 16,
+        mainAxisSpacing: 16,
       ),
-      child: InkWell(
-        onTap: () => context.push('/course/${course.id}'),
+      itemCount: _filteredCourses.length,
+      itemBuilder: (context, index) {
+        final course = _filteredCourses[index];
+        return _buildCourseCard(theme, course);
+      },
+    );
+  }
+  
+  Widget _buildCourseCard(ThemeData theme, Course course) {
+    return GestureDetector(
+      onTap: () => context.push('/course/${course.id}'),
+      child: GlassmorphicCard(
+        padding: EdgeInsets.zero,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Course thumbnail
+            // Course thumbnail with overlay for tags
             Stack(
               children: [
-                SizedBox(
-                  height: 160,
-                  width: double.infinity,
-                  child: CachedNetworkImage(
-                    imageUrl: course.thumbnail,
-                    fit: BoxFit.cover,
-                    placeholder: (context, url) => Container(
-                      color: theme.colorScheme.primary.withOpacity(0.1),
-                      child: const Center(child: CircularProgressIndicator()),
-                    ),
-                    errorWidget: (context, url, error) => Container(
-                      color: theme.colorScheme.primary.withOpacity(0.1),
-                      child: const Center(child: Icon(Icons.error)),
+                // Thumbnail
+                ClipRRect(
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(16),
+                    topRight: Radius.circular(16),
+                  ),
+                  child: AspectRatio(
+                    aspectRatio: 16 / 9,
+                    child: Image.network(
+                      course.thumbnail,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Container(
+                          color: theme.colorScheme.primary.withOpacity(0.2),
+                          child: Center(
+                            child: Icon(
+                              Icons.image,
+                              color: theme.colorScheme.primary,
+                            ),
+                          ),
+                        );
+                      },
                     ),
                   ),
                 ),
                 
                 // Price badge
                 Positioned(
-                  top: 12,
-                  right: 12,
+                  top: 8,
+                  right: 8,
                   child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 6,
-                    ),
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     decoration: BoxDecoration(
                       color: course.priceType == 'Free'
-                          ? AppColors.success
-                          : theme.colorScheme.primary,
-                      borderRadius: BorderRadius.circular(16),
+                          ? Colors.green.withOpacity(0.8)
+                          : theme.colorScheme.primary.withOpacity(0.8),
+                      borderRadius: BorderRadius.circular(12),
                     ),
                     child: Text(
                       course.priceType == 'Free'
                           ? 'Free'
-                          : '\$${course.price.toStringAsFixed(2)}',
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ),
-                
-                // Skill level badge
-                Positioned(
-                  top: 12,
-                  left: 12,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 6,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Colors.black.withOpacity(0.6),
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    child: Text(
-                      course.skillLevel,
+                          : '\$${course.price.toStringAsFixed(0)}',
                       style: const TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
@@ -338,152 +493,120 @@ class _CoursesScreenState extends State<CoursesScreen> with SingleTickerProvider
                     ),
                   ),
                 ),
+                
+                // Skill level badge
+                Positioned(
+                  top: 8,
+                  left: 8,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: Colors.black.withOpacity(0.7),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Text(
+                      course.skillLevel,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 10,
+                      ),
+                    ),
+                  ),
+                ),
               ],
             ),
             
-            // Course content
+            // Course info
             Padding(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(12),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Title
+                  // Course title
                   Text(
                     course.title,
-                    style: AppTextStyles.heading5,
+                    style: AppTextStyles.bodyLarge.copyWith(
+                      color: theme.colorScheme.onSurface,
+                      fontWeight: FontWeight.bold,
+                    ),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 4),
                   
                   // Instructor
+                  Text(
+                    course.instructor.name,
+                    style: AppTextStyles.bodySmall.copyWith(
+                      color: theme.colorScheme.onSurface.withOpacity(0.7),
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 8),
+                  
+                  // Stats row (rating, lessons)
                   Row(
                     children: [
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(15),
-                        child: CachedNetworkImage(
-                          imageUrl: course.instructor.avatar,
-                          width: 30,
-                          height: 30,
-                          fit: BoxFit.cover,
-                          placeholder: (context, url) => Container(
-                            color: theme.colorScheme.primary.withOpacity(0.1),
-                          ),
-                          errorWidget: (context, url, error) => Container(
-                            color: theme.colorScheme.primary.withOpacity(0.1),
-                            child: const Icon(Icons.person, size: 16),
-                          ),
+                      Icon(
+                        Icons.star,
+                        size: 16,
+                        color: Colors.amber,
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        course.rating.toString(),
+                        style: AppTextStyles.bodySmall.copyWith(
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
-                      const SizedBox(width: 8),
+                      const SizedBox(width: 12),
+                      Icon(
+                        Icons.menu_book_outlined,
+                        size: 16,
+                        color: theme.colorScheme.onSurface.withOpacity(0.7),
+                      ),
+                      const SizedBox(width: 4),
                       Text(
-                        course.instructor.name,
-                        style: AppTextStyles.bodyMedium.copyWith(
+                        '${course.totalLessons} lessons',
+                        style: AppTextStyles.bodySmall.copyWith(
                           color: theme.colorScheme.onSurface.withOpacity(0.7),
                         ),
                       ),
                     ],
                   ),
-                  
-                  const SizedBox(height: 12),
-                  
-                  // Course meta info
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      // Rating
-                      Row(
-                        children: [
-                          const Icon(
-                            Icons.star,
-                            color: Colors.amber,
-                            size: 18,
-                          ),
-                          const SizedBox(width: 4),
-                          Text(
-                            course.rating.toStringAsFixed(1),
-                            style: AppTextStyles.bodyMedium.copyWith(
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          const SizedBox(width: 4),
-                          Text(
-                            '(${course.reviewCount})',
-                            style: AppTextStyles.bodySmall.copyWith(
-                              color: theme.colorScheme.onSurface.withOpacity(0.6),
-                            ),
-                          ),
-                        ],
-                      ),
-                      
-                      // Students count
-                      Row(
-                        children: [
-                          const Icon(
-                            Icons.people,
-                            size: 18,
-                            color: Colors.grey,
-                          ),
-                          const SizedBox(width: 4),
-                          Text(
-                            '${course.studentsEnrolled} students',
-                            style: AppTextStyles.bodySmall.copyWith(
-                              color: theme.colorScheme.onSurface.withOpacity(0.6),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  
-                  const SizedBox(height: 12),
+                  const SizedBox(height: 8),
                   
                   // Tags
                   if (course.tags.isNotEmpty)
                     Wrap(
-                      spacing: 8,
-                      runSpacing: 8,
-                      children: course.tags.map((tag) {
+                      spacing: 6,
+                      runSpacing: 6,
+                      children: course.tags.take(2).map((tag) {
                         return Container(
                           padding: const EdgeInsets.symmetric(
-                            horizontal: 10,
-                            vertical: 4,
+                            horizontal: 6,
+                            vertical: 2,
                           ),
                           decoration: BoxDecoration(
-                            color: isDark 
-                              ? theme.colorScheme.primary.withOpacity(0.2)
-                              : theme.colorScheme.primary.withOpacity(0.1),
-                            borderRadius: BorderRadius.circular(16),
+                            color: _getTagColor(tag).withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(4),
+                            border: Border.all(
+                              color: _getTagColor(tag).withOpacity(0.3),
+                            ),
                           ),
                           child: Text(
                             tag,
                             style: TextStyle(
-                              color: theme.colorScheme.primary,
-                              fontSize: 12,
-                              fontWeight: FontWeight.w500,
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold,
+                              color: _getTagColor(tag),
                             ),
                           ),
                         );
                       }).toList(),
                     ),
-                  
-                  const SizedBox(height: 12),
-                  
-                  // Course info
-                  Row(
-                    children: [
-                      _buildInfoChip(
-                        Icons.timer_outlined,
-                        course.totalDuration,
-                      ),
-                      const SizedBox(width: 12),
-                      _buildInfoChip(
-                        Icons.menu_book_outlined,
-                        '${course.totalLessons} lessons',
-                      ),
-                    ],
-                  ),
                 ],
               ),
             ),
@@ -493,262 +616,364 @@ class _CoursesScreenState extends State<CoursesScreen> with SingleTickerProvider
     );
   }
   
-  Widget _buildInfoChip(IconData icon, String label) {
-    final theme = Theme.of(context);
-    
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 8,
-        vertical: 4,
-      ),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.onSurface.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(
-            icon,
-            size: 14,
-            color: theme.colorScheme.onSurface.withOpacity(0.7),
-          ),
-          const SizedBox(width: 4),
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: 12,
-              color: theme.colorScheme.onSurface.withOpacity(0.7),
+  Widget _buildEmptyState(ThemeData theme) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.search_off,
+              size: 80,
+              color: theme.colorScheme.primary.withOpacity(0.5),
             ),
+            const SizedBox(height: 24),
+            Text(
+              'No courses found',
+              style: AppTextStyles.heading4.copyWith(
+                color: theme.colorScheme.onBackground,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 12),
+            Text(
+              'Try adjusting your filters or search query to find what you\'re looking for.',
+              style: AppTextStyles.bodyMedium.copyWith(
+                color: theme.colorScheme.onBackground.withOpacity(0.7),
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 24),
+            ElevatedButton.icon(
+              onPressed: _resetFilters,
+              icon: const Icon(Icons.refresh),
+              label: const Text('Reset Filters'),
+              style: ElevatedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+  
+  Widget _buildFilterDrawer(ThemeData theme) {
+    return Container(
+      color: theme.scaffoldBackgroundColor,
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Header
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Filter Courses',
+                style: AppTextStyles.heading4.copyWith(
+                  color: theme.colorScheme.onBackground,
+                ),
+              ),
+              IconButton(
+                onPressed: _toggleFilterDrawer,
+                icon: const Icon(Icons.close),
+                color: theme.colorScheme.onBackground,
+              ),
+            ],
+          ),
+          
+          const Divider(),
+          
+          // Filters
+          Expanded(
+            child: ListView(
+              children: [
+                // Skill Level filter
+                _buildFilterSection(
+                  theme,
+                  title: 'Skill Level',
+                  child: Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: _skillLevels.map((level) {
+                      final isSelected = _selectedSkillLevel == level;
+                      
+                      return GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            _selectedSkillLevel = level;
+                          });
+                          _applyFilters();
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 8,
+                          ),
+                          decoration: BoxDecoration(
+                            color: isSelected
+                                ? theme.colorScheme.primary
+                                : theme.colorScheme.surface,
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(
+                              color: isSelected
+                                  ? theme.colorScheme.primary
+                                  : theme.colorScheme.onSurface.withOpacity(0.2),
+                            ),
+                          ),
+                          child: Text(
+                            level,
+                            style: TextStyle(
+                              color: isSelected
+                                  ? Colors.white
+                                  : theme.colorScheme.onSurface,
+                              fontWeight: isSelected 
+                                  ? FontWeight.bold 
+                                  : FontWeight.normal,
+                            ),
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                ),
+                
+                const SizedBox(height: 16),
+                
+                // Tags filter
+                _buildFilterSection(
+                  theme,
+                  title: 'Topics',
+                  child: Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: _tags.map((tag) {
+                      final isSelected = _selectedTags.contains(tag);
+                      final tagColor = _getTagColor(tag);
+                      
+                      return GestureDetector(
+                        onTap: () => _toggleTagFilter(tag),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 8,
+                          ),
+                          decoration: BoxDecoration(
+                            color: isSelected
+                                ? tagColor.withOpacity(0.2)
+                                : theme.colorScheme.surface,
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(
+                              color: isSelected
+                                  ? tagColor
+                                  : theme.colorScheme.onSurface.withOpacity(0.2),
+                            ),
+                          ),
+                          child: Text(
+                            tag,
+                            style: TextStyle(
+                              color: isSelected ? tagColor : theme.colorScheme.onSurface,
+                              fontWeight: isSelected 
+                                  ? FontWeight.bold 
+                                  : FontWeight.normal,
+                            ),
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                ),
+                
+                const SizedBox(height: 16),
+                
+                // Price Type filter
+                _buildFilterSection(
+                  theme,
+                  title: 'Price',
+                  child: Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: _priceTypes.map((price) {
+                      final isSelected = _selectedPriceType == price;
+                      
+                      return GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            _selectedPriceType = price;
+                          });
+                          _applyFilters();
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 8,
+                          ),
+                          decoration: BoxDecoration(
+                            color: isSelected
+                                ? (price == 'Free' 
+                                    ? Colors.green 
+                                    : theme.colorScheme.primary)
+                                : theme.colorScheme.surface,
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(
+                              color: isSelected
+                                  ? (price == 'Free' 
+                                      ? Colors.green 
+                                      : theme.colorScheme.primary)
+                                  : theme.colorScheme.onSurface.withOpacity(0.2),
+                            ),
+                          ),
+                          child: Text(
+                            price,
+                            style: TextStyle(
+                              color: isSelected
+                                  ? Colors.white
+                                  : theme.colorScheme.onSurface,
+                              fontWeight: isSelected 
+                                  ? FontWeight.bold 
+                                  : FontWeight.normal,
+                            ),
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                ),
+                
+                const SizedBox(height: 16),
+                
+                // Duration filter
+                _buildFilterSection(
+                  theme,
+                  title: 'Duration',
+                  child: Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: _durations.map((duration) {
+                      final isSelected = _selectedDuration == duration;
+                      
+                      return GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            _selectedDuration = duration;
+                          });
+                          _applyFilters();
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 8,
+                          ),
+                          decoration: BoxDecoration(
+                            color: isSelected
+                                ? theme.colorScheme.secondary
+                                : theme.colorScheme.surface,
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(
+                              color: isSelected
+                                  ? theme.colorScheme.secondary
+                                  : theme.colorScheme.onSurface.withOpacity(0.2),
+                            ),
+                          ),
+                          child: Text(
+                            duration,
+                            style: TextStyle(
+                              color: isSelected
+                                  ? Colors.white
+                                  : theme.colorScheme.onSurface,
+                              fontWeight: isSelected 
+                                  ? FontWeight.bold 
+                                  : FontWeight.normal,
+                            ),
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          
+          const Divider(),
+          
+          // Action buttons
+          Row(
+            children: [
+              Expanded(
+                child: OutlinedButton(
+                  onPressed: _resetFilters,
+                  child: const Text('Reset'),
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                flex: 2,
+                child: ElevatedButton(
+                  onPressed: () {
+                    _applyFilters();
+                    _toggleFilterDrawer();
+                  },
+                  child: Text('Apply (${_filteredCourses.length})'),
+                ),
+              ),
+            ],
           ),
         ],
       ),
     );
   }
   
-  void _showFilterBottomSheet(BuildContext context) {
-    final theme = Theme.of(context);
-    
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(20),
+  Widget _buildFilterSection(
+    ThemeData theme, {
+    required String title,
+    required Widget child,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: AppTextStyles.heading5.copyWith(
+            color: theme.colorScheme.onBackground,
+          ),
         ),
-      ),
-      builder: (context) {
-        return StatefulBuilder(
-          builder: (context, setState) {
-            return DraggableScrollableSheet(
-              initialChildSize: 0.6,
-              minChildSize: 0.4,
-              maxChildSize: 0.9,
-              expand: false,
-              builder: (context, scrollController) {
-                return Column(
-                  children: [
-                    // Header
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            'Filter Courses',
-                            style: AppTextStyles.heading4,
-                          ),
-                          IconButton(
-                            icon: const Icon(Icons.close),
-                            onPressed: () => Navigator.pop(context),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const Divider(),
-                    
-                    // Filter options
-                    Expanded(
-                      child: ListView(
-                        controller: scrollController,
-                        padding: const EdgeInsets.all(16),
-                        children: [
-                          // Skill Level filter
-                          Text(
-                            'Skill Level',
-                            style: AppTextStyles.heading6,
-                          ),
-                          const SizedBox(height: 8),
-                          Wrap(
-                            spacing: 8,
-                            runSpacing: 8,
-                            children: _skillLevels.map((level) {
-                              final isSelected = _selectedSkillLevel == level;
-                              return ChoiceChip(
-                                label: Text(level),
-                                selected: isSelected,
-                                onSelected: (selected) {
-                                  setState(() {
-                                    _selectedSkillLevel = selected ? level : 'All';
-                                  });
-                                },
-                                selectedColor: theme.colorScheme.primary,
-                                labelStyle: TextStyle(
-                                  color: isSelected 
-                                    ? Colors.white 
-                                    : theme.colorScheme.onSurface,
-                                ),
-                              );
-                            }).toList(),
-                          ),
-                          
-                          const SizedBox(height: 16),
-                          
-                          // Price Type filter
-                          Text(
-                            'Price',
-                            style: AppTextStyles.heading6,
-                          ),
-                          const SizedBox(height: 8),
-                          Wrap(
-                            spacing: 8,
-                            runSpacing: 8,
-                            children: _priceTypes.map((type) {
-                              final isSelected = _selectedPriceType == type;
-                              return ChoiceChip(
-                                label: Text(type),
-                                selected: isSelected,
-                                onSelected: (selected) {
-                                  setState(() {
-                                    _selectedPriceType = selected ? type : 'All';
-                                  });
-                                },
-                                selectedColor: theme.colorScheme.primary,
-                                labelStyle: TextStyle(
-                                  color: isSelected 
-                                    ? Colors.white 
-                                    : theme.colorScheme.onSurface,
-                                ),
-                              );
-                            }).toList(),
-                          ),
-                          
-                          const SizedBox(height: 16),
-                          
-                          // Duration filter
-                          Text(
-                            'Duration',
-                            style: AppTextStyles.heading6,
-                          ),
-                          const SizedBox(height: 8),
-                          Wrap(
-                            spacing: 8,
-                            runSpacing: 8,
-                            children: _durations.map((duration) {
-                              final isSelected = _selectedDuration == duration;
-                              return ChoiceChip(
-                                label: Text(duration),
-                                selected: isSelected,
-                                onSelected: (selected) {
-                                  setState(() {
-                                    _selectedDuration = selected ? duration : 'All';
-                                  });
-                                },
-                                selectedColor: theme.colorScheme.primary,
-                                labelStyle: TextStyle(
-                                  color: isSelected 
-                                    ? Colors.white 
-                                    : theme.colorScheme.onSurface,
-                                ),
-                              );
-                            }).toList(),
-                          ),
-                          
-                          const SizedBox(height: 16),
-                          
-                          // Tags filter
-                          Text(
-                            'Topics',
-                            style: AppTextStyles.heading6,
-                          ),
-                          const SizedBox(height: 8),
-                          Wrap(
-                            spacing: 8,
-                            runSpacing: 8,
-                            children: _availableTags.map((tag) {
-                              final isSelected = _selectedTags.contains(tag);
-                              return FilterChip(
-                                label: Text(tag),
-                                selected: isSelected,
-                                onSelected: (selected) {
-                                  setState(() {
-                                    if (selected) {
-                                      _selectedTags.add(tag);
-                                    } else {
-                                      _selectedTags.remove(tag);
-                                    }
-                                  });
-                                },
-                                selectedColor: theme.colorScheme.primary,
-                                labelStyle: TextStyle(
-                                  color: isSelected 
-                                    ? Colors.white 
-                                    : theme.colorScheme.onSurface,
-                                ),
-                              );
-                            }).toList(),
-                          ),
-                        ],
-                      ),
-                    ),
-                    
-                    // Filter actions
-                    Container(
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        color: theme.cardColor,
-                        border: Border(
-                          top: BorderSide(color: theme.dividerColor),
-                        ),
-                      ),
-                      child: Row(
-                        children: [
-                          // Reset button
-                          Expanded(
-                            child: OutlinedButton(
-                              onPressed: () {
-                                setState(() {
-                                  _selectedSkillLevel = 'All';
-                                  _selectedPriceType = 'All';
-                                  _selectedDuration = 'All';
-                                  _selectedTags = [];
-                                });
-                              },
-                              child: const Text('Reset'),
-                            ),
-                          ),
-                          const SizedBox(width: 16),
-                          
-                          // Apply button
-                          Expanded(
-                            child: ElevatedButton(
-                              onPressed: () {
-                                _applyFilters();
-                                Navigator.pop(context);
-                              },
-                              child: const Text('Apply Filters'),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                );
-              },
-            );
-          },
-        );
-      },
+        const SizedBox(height: 12),
+        child,
+      ],
     );
+  }
+  
+  bool _hasActiveFilters() {
+    return _selectedSkillLevel != 'All' ||
+           _selectedTags.isNotEmpty ||
+           _selectedPriceType != 'All' ||
+           _selectedDuration != 'All' ||
+           _searchQuery.isNotEmpty;
+  }
+  
+  Color _getTagColor(String tag) {
+    switch (tag) {
+      case 'GenAI':
+        return Colors.purple;
+      case 'Python':
+        return Colors.blue;
+      case 'MLOps':
+        return Colors.green;
+      case 'RealWorld':
+        return Colors.orange;
+      case 'Agents':
+        return Colors.teal;
+      case 'LLMs':
+        return Colors.indigo;
+      case 'Computer Vision':
+        return Colors.red;
+      case 'NLP':
+        return Colors.amber.shade800;
+      default:
+        return Colors.grey;
+    }
   }
 }
