@@ -4,10 +4,20 @@ import '../../theme/app_theme.dart';
 import '../../models/course.dart';
 
 class CourseRecommendationCard extends StatelessWidget {
-  final Course course;
+  final String courseId;
+  final String title;
+  final String subtitle;
+  final String instructorName;
+  final String thumbnailUrl;
+  final double rating;
 
   const CourseRecommendationCard({
-    required this.course,
+    required this.courseId,
+    required this.title,
+    required this.subtitle,
+    required this.instructorName,
+    required this.thumbnailUrl,
+    required this.rating,
     super.key,
   });
 
@@ -22,7 +32,7 @@ class CourseRecommendationCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
       ),
       child: InkWell(
-        onTap: () => context.go('/course/${course.id}'),
+        onTap: () => context.go('/course/$courseId'),
         borderRadius: BorderRadius.circular(16),
         child: Padding(
           padding: const EdgeInsets.all(16),
@@ -64,7 +74,7 @@ class CourseRecommendationCard extends StatelessWidget {
               
               // Course title
               Text(
-                course.title,
+                title,
                 style: AppTextStyles.heading5,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
@@ -74,7 +84,7 @@ class CourseRecommendationCard extends StatelessWidget {
               
               // Course description
               Text(
-                course.description,
+                subtitle,
                 style: TextStyle(
                   color: theme.colorScheme.onSurface.withOpacity(0.8),
                   fontSize: 14,
@@ -92,7 +102,7 @@ class CourseRecommendationCard extends StatelessWidget {
                   _buildInfoChip(
                     context,
                     Icons.signal_cellular_alt,
-                    course.skillLevel,
+                    instructorName,
                   ),
                   
                   const SizedBox(width: 8),
@@ -101,7 +111,7 @@ class CourseRecommendationCard extends StatelessWidget {
                   _buildInfoChip(
                     context,
                     Icons.timer_outlined,
-                    course.totalDuration,
+                    "Course",
                   ),
                   
                   const SizedBox(width: 8),
@@ -110,7 +120,7 @@ class CourseRecommendationCard extends StatelessWidget {
                   _buildInfoChip(
                     context,
                     Icons.star_outline,
-                    '${course.rating}',
+                    '$rating',
                     showIconInGold: true,
                   ),
                 ],
@@ -124,11 +134,9 @@ class CourseRecommendationCard extends StatelessWidget {
                 children: [
                   // Price
                   Text(
-                    course.priceType == 'Free'
-                        ? 'Free'
-                        : '\$${course.price.toStringAsFixed(2)}',
+                    'Featured',
                     style: TextStyle(
-                      color: course.priceType == 'Free'
+                      color: Colors.purple
                           ? Colors.green
                           : theme.colorScheme.onSurface,
                       fontWeight: FontWeight.bold,
