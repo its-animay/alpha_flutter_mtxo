@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mtxo_labs_edtech/theme/app_theme.dart';
+import '../theme/app_theme.dart';
 
 class MainLayout extends StatefulWidget {
   final Widget child;

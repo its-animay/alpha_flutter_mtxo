@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mtxo_labs_edtech/theme/app_theme.dart';
+import '../../theme/app_theme.dart';
 
 /// An enhanced text field with interactive validation feedback
 class EnhancedTextField extends StatefulWidget {
