@@ -86,7 +86,7 @@ class AppRouter {
               pageBuilder: (context, state) {
                 final courseId = state.pathParameters['courseId']!;
                 final lessonId = state.pathParameters['lessonId']!;
-                final moduleId = state.queryParameters['moduleId'];
+                final moduleId = state.uri.queryParameters['moduleId'];
                 
                 return _buildPageTransition(
                   context,
