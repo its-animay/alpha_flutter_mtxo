@@ -1,0 +1,37 @@
++ wakelock_plus 1.3.2
++ wakelock_plus_platform_interface 1.2.3
++ web 1.1.1
++ win32 5.13.0
++ xdg_directories 1.1.0
++ xml 6.5.0
+Changed 122 dependencies!
+1 package is discontinued.
+25 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+macbook@Animays-MacBook-Pro flutter_app % flutter run 
+No devices found yet. Checking for wireless devices...
+
+No supported devices connected.
+
+The following devices were found, but are not supported by this project:
+iPhone 16 Plus (mobile)         • F2FDEA58-BDD3-4E80-A351-58F1168B950F • ios            • com.apple.CoreSimulator.SimRuntime.iOS-18-4 (simulator)
+macOS (desktop)                 • macos                                • darwin-arm64   • macOS 15.3.2 24D81 darwin-arm64
+Mac Designed for iPad (desktop) • mac-designed-for-ipad                • darwin         • macOS 15.3.2 24D81 darwin-arm64
+Chrome (web)                    • chrome                               • web-javascript • Google Chrome 136.0.7103.114
+If you would like your app to run on ios or macos or web, consider running `flutter create .` to generate projects for these platforms.
+macbook@Animays-MacBook-Pro flutter_app % flutter run -d ios                                                                                                            
+No devices found yet. Checking for wireless devices...
+
+No supported devices found with name or id matching 'ios'.
+
+The following devices were found:
+iPhone 16 Plus (mobile)         • F2FDEA58-BDD3-4E80-A351-58F1168B950F • ios            • com.apple.CoreSimulator.SimRuntime.iOS-18-4 (simulator)
+macOS (desktop)                 • macos                                • darwin-arm64   • macOS 15.3.2 24D81 darwin-arm64
+Mac Designed for iPad (desktop) • mac-designed-for-ipad                • darwin         • macOS 15.3.2 24D81 darwin-arm64
+Chrome (web)                    • chrome                               • web-javascript • Google Chrome 136.0.7103.114
+macbook@Animays-MacBook-Pro flutter_app % 
+
+
+
+
+

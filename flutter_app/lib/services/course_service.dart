@@ -305,7 +305,7 @@ class CourseService {
                 title: 'Introduction to Large Language Models',
                 duration: '18 min',
                 isFree: true,
-                description: 'Overview of what LLMs are and how they're revolutionizing AI.',
+                description: 'Overview of what LLMs are and how they are revolutionizing AI.',
               ),
               CourseLessonItem(
                 id: 'l2',
