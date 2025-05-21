@@ -3,30 +3,30 @@ import 'package:google_fonts/google_fonts.dart';
 
 /// Colors used throughout the application
 class AppColors {
-  // Primary and accent colors
-  static const primary = Color(0xFF536DFE);
-  static const secondary = Color(0xFF03DAC6);
+  // Primary and accent colors - Matching web app theme
+  static const primary = Color(0xFF00C8FF);     // primary: 192 100% 50%
+  static const secondary = Color(0xFF8C46FF);   // secondary: 264 84% 62%
   static const tertiary = Color(0xFFFF9E80);
   
   // Functional colors
-  static const success = Color(0xFF4CAF50);
+  static const success = Color(0xFF0CCD8D);     // success: 159 85% 40%
   static const warning = Color(0xFFFFC107);
-  static const error = Color(0xFFEF5350);
+  static const error = Color(0xFFFF3D3D);       // error: 0 85% 60%
   static const info = Color(0xFF2196F3);
   
   // Dark theme specific colors
-  static const darkSurface = Color(0xFF1F1F1F);
-  static const darkBackground = Color(0xFF121212);
+  static const darkSurface = Color(0xFF1E2539); // card: 225 16% 17% / 0.5
+  static const darkBackground = Color(0xFF191E2C); // background: 225 18% 12%
   static const darkError = Color(0xFFCF6679);
   
   // Gradient colors
-  static const gradientStart = Color(0xFF536DFE);
-  static const gradientMiddle = Color(0xFF8C9EFF);
-  static const gradientEnd = Color(0xFF82B1FF);
+  static const gradientStart = Color(0xFF00C8FF); // primary
+  static const gradientMiddle = Color(0xFF4DA0FF); // blend
+  static const gradientEnd = Color(0xFF8C46FF);    // secondary
   
   // Glassmorphism
-  static const glassLight = Color(0xADF7F7F7);
-  static const glassDark = Color(0xAD1E1E1E);
+  static const glassLight = Color(0xB3FFFFFF);  // white/70
+  static const glassDark = Color(0x801E2539);   // darkSurface with opacity
 }
 
 /// Text styles used throughout the application
@@ -136,7 +136,7 @@ class AppBorderRadius {
 
 /// Main app theme
 class AppTheme {
-  // Create light theme
+  // Create light theme - matching web app theme
   static ThemeData lightTheme() {
     final base = ThemeData.light();
     
@@ -147,18 +147,18 @@ class AppTheme {
         onPrimary: Colors.white,
         secondary: AppColors.secondary,
         secondaryContainer: AppColors.secondary.withOpacity(0.2),
-        onSecondary: Colors.black,
+        onSecondary: Colors.white,
         tertiary: AppColors.tertiary,
         tertiaryContainer: AppColors.tertiary.withOpacity(0.2),
         onTertiary: Colors.black,
         error: AppColors.error,
         onError: Colors.white,
-        background: Colors.white,
+        background: const Color(0xFFF6F9FE), // light-bg-start/end blend
         onBackground: Colors.black,
-        surface: Colors.white,
+        surface: Colors.white.withOpacity(0.7), // light-card
         onSurface: Colors.black,
       ),
-      scaffoldBackgroundColor: const Color(0xFFF8F8F8),
+      scaffoldBackgroundColor: const Color(0xFFF6F9FE), // light-bg-start/end blend
       cardColor: Colors.white,
       dividerColor: Colors.grey[300],
       textTheme: GoogleFonts.poppinsTextTheme(base.textTheme).copyWith(
@@ -361,7 +361,7 @@ class AppTheme {
     );
   }
   
-  // Create dark theme
+  // Create dark theme - matching web app theme
   static ThemeData darkTheme() {
     final base = ThemeData.dark();
     
@@ -372,18 +372,18 @@ class AppTheme {
         onPrimary: Colors.white,
         secondary: AppColors.secondary,
         secondaryContainer: AppColors.secondary.withOpacity(0.2),
-        onSecondary: Colors.black,
+        onSecondary: Colors.white,
         tertiary: AppColors.tertiary,
         tertiaryContainer: AppColors.tertiary.withOpacity(0.2),
         onTertiary: Colors.black,
-        error: AppColors.darkError,
+        error: AppColors.error,
         onError: Colors.white,
-        background: AppColors.darkBackground,
-        onBackground: Colors.white,
-        surface: AppColors.darkSurface,
-        onSurface: Colors.white,
+        background: AppColors.darkBackground, // --dark-bg / --background
+        onBackground: Colors.white.withOpacity(0.98), // --foreground
+        surface: AppColors.darkSurface.withOpacity(0.5), // --card
+        onSurface: Colors.white.withOpacity(0.98), // --card-foreground
       ),
-      scaffoldBackgroundColor: AppColors.darkBackground,
+      scaffoldBackgroundColor: AppColors.darkBackground, // --dark-bg
       cardColor: AppColors.darkSurface,
       dividerColor: Colors.grey[800],
       textTheme: GoogleFonts.poppinsTextTheme(base.textTheme).copyWith(
