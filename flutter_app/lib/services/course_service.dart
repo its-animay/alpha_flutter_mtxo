@@ -524,7 +524,7 @@ class CourseService {
             id: 'r1',
             userName: 'Emma T.',
             rating: 5.0,
-            comment: 'The best computer vision course I've taken. Absolutely worth every minute of your time!',
+            comment: 'The best computer vision course I have taken. Absolutely worth every minute of your time!',
             date: '2023-11-10',
           ),
         ],
