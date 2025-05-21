@@ -174,7 +174,7 @@ class AppRouter {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'Could not find a page at: ${state.location}',
+                    'Could not find a page at: ${state.uri.path}',
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 24),
