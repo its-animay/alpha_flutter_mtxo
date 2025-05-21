@@ -40,16 +40,10 @@ class MarkdownRenderer extends StatelessWidget {
     return Padding(
       padding: padding,
       child: selectable
-          ? SelectableMarkdown(
-              data: data,
-              onTapLink: (text, href, title) {
-                _launchUrl(href);
-              },
-              styleSheet: _buildStyleSheet(
-                theme,
-                defaultTitleStyle,
-                defaultBodyStyle,
-                defaultCodeStyle,
+          ? SelectableText.rich(
+              TextSpan(
+                text: data,
+                style: defaultBodyStyle,
               ),
             )
           : Markdown(
