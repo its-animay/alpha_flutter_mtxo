@@ -4,12 +4,20 @@ import '../../theme/app_theme.dart';
 import '../../models/course.dart';
 
 class EnrollmentCard extends StatelessWidget {
-  final Course course;
-  final double progress;
+  final String courseId;
+  final String title;
+  final String instructorName;
+  final String thumbnailUrl;
+  final int progress;
+  final String lastAccessDate;
 
   const EnrollmentCard({
-    required this.course,
+    required this.courseId,
+    required this.title,
+    required this.instructorName,
+    required this.thumbnailUrl,
     required this.progress,
+    required this.lastAccessDate,
     super.key,
   });
 
@@ -23,7 +31,7 @@ class EnrollmentCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
       ),
       child: InkWell(
-        onTap: () => context.go('/course/${course.id}'),
+        onTap: () => context.go('/course/$courseId'),
         borderRadius: BorderRadius.circular(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -39,7 +47,7 @@ class EnrollmentCard extends StatelessWidget {
                   child: AspectRatio(
                     aspectRatio: 16 / 9,
                     child: Image.network(
-                      course.thumbnail,
+                      thumbnailUrl,
                       fit: BoxFit.cover,
                       errorBuilder: (context, error, stackTrace) {
                         return Container(
@@ -81,7 +89,7 @@ class EnrollmentCard extends StatelessWidget {
                 children: [
                   // Title
                   Text(
-                    course.title,
+                    title,
                     style: AppTextStyles.heading5,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
@@ -91,7 +99,7 @@ class EnrollmentCard extends StatelessWidget {
                   
                   // Progress text
                   Text(
-                    '${(progress * 100).toInt()}% complete',
+                    '$progress% complete',
                     style: TextStyle(
                       color: theme.colorScheme.primary,
                       fontWeight: FontWeight.bold,
