@@ -587,8 +587,10 @@ class AppTheme {
     );
   }
   
-  /// Text styles for the app
-  static class AppTextStyles {
+}
+
+/// Text styles for the app
+class AppTextStyles {
     /// Heading 1 text style
     static final TextStyle heading1 = GoogleFonts.poppins(
       fontSize: 32,
@@ -651,8 +653,10 @@ class AppTheme {
     );
   }
   
-  /// Shadow styles for the app
-  static class AppShadows {
+}
+
+/// Shadow styles for the app
+class AppShadows {
     /// Small shadow
     static const List<BoxShadow> small = [
       BoxShadow(
