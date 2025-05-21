@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
-import 'package:mtxo_labs_edtech/services/auth_service.dart';
-import 'package:mtxo_labs_edtech/services/course_service.dart';
-import 'package:mtxo_labs_edtech/theme/app_theme.dart';
-import 'package:mtxo_labs_edtech/models/course.dart';
-import 'package:mtxo_labs_edtech/widgets/dashboard/enrollment_card.dart';
-import 'package:mtxo_labs_edtech/widgets/dashboard/course_recommendation_card.dart';
+import '../services/auth_service.dart';
+import '../services/course_service.dart';
+import '../theme/app_theme.dart';
+import '../models/course.dart';
+import '../widgets/dashboard/enrollment_card.dart';
+import '../widgets/dashboard/course_recommendation_card.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});

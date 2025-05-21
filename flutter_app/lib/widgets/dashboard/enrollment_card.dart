@@ -1,27 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:mtxo_labs_edtech/models/course.dart';
-import 'package:mtxo_labs_edtech/theme/app_theme.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:go_router/go_router.dart';
+import '../../theme/app_theme.dart';
+import '../../models/course.dart';
 
-/// A card widget that displays an enrolled course on the dashboard
 class EnrollmentCard extends StatelessWidget {
-  final String courseId;
-  final String title;
-  final String instructorName;
-  final String thumbnailUrl;
-  final int progress;
-  final String lastAccessDate;
-  final VoidCallback? onTap;
+  final Course course;
+  final double progress;
 
   const EnrollmentCard({
-    required this.courseId,
-    required this.title,
-    required this.instructorName,
-    required this.thumbnailUrl,
+    required this.course,
     required this.progress,
-    required this.lastAccessDate,
-    this.onTap,
     super.key,
   });
 
@@ -29,142 +17,115 @@ class EnrollmentCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     
-    return GestureDetector(
-      onTap: onTap ?? () => context.push('/course/$courseId'),
-      child: Container(
-        margin: const EdgeInsets.only(bottom: 16),
-        decoration: BoxDecoration(
-          color: theme.cardColor,
-          borderRadius: BorderRadius.circular(12),
-          boxShadow: AppShadows.small,
-        ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(12),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Course thumbnail
-              Stack(
-                children: [
-                  // Image
-                  SizedBox(
-                    height: 140,
-                    width: double.infinity,
-                    child: CachedNetworkImage(
-                      imageUrl: thumbnailUrl,
+    return Card(
+      elevation: 4,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: InkWell(
+        onTap: () => context.go('/course/${course.id}'),
+        borderRadius: BorderRadius.circular(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Course thumbnail with progress indicator
+            Stack(
+              children: [
+                // Thumbnail
+                ClipRRect(
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(16),
+                  ),
+                  child: AspectRatio(
+                    aspectRatio: 16 / 9,
+                    child: Image.network(
+                      course.thumbnail,
                       fit: BoxFit.cover,
-                      placeholder: (context, url) => Container(
-                        color: theme.colorScheme.primary.withOpacity(0.1),
-                        child: Center(
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            color: theme.colorScheme.primary,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Container(
+                          color: theme.colorScheme.primary.withOpacity(0.2),
+                          child: Center(
+                            child: Icon(
+                              Icons.image_not_supported_outlined,
+                              color: theme.colorScheme.primary,
+                            ),
                           ),
-                        ),
-                      ),
-                      errorWidget: (context, url, error) => Container(
-                        color: theme.colorScheme.primary.withOpacity(0.1),
-                        child: Center(
-                          child: Icon(
-                            Icons.image_not_supported_outlined,
-                            color: theme.colorScheme.primary,
-                          ),
-                        ),
-                      ),
+                        );
+                      },
+                    ),
+                  ),
+                ),
+                
+                // Progress indicator
+                Positioned(
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  child: LinearProgressIndicator(
+                    value: progress,
+                    backgroundColor: Colors.black.withOpacity(0.2),
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                      theme.colorScheme.primary,
+                    ),
+                    minHeight: 6,
+                  ),
+                ),
+              ],
+            ),
+            
+            // Course details
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Title
+                  Text(
+                    course.title,
+                    style: AppTextStyles.heading5,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  
+                  const SizedBox(height: 4),
+                  
+                  // Progress text
+                  Text(
+                    '${(progress * 100).toInt()}% complete',
+                    style: TextStyle(
+                      color: theme.colorScheme.primary,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                   
-                  // Progress indicator overlay
-                  Positioned(
-                    bottom: 0,
-                    left: 0,
-                    right: 0,
-                    child: Container(
-                      height: 8,
-                      width: double.infinity,
-                      color: Colors.black.withOpacity(0.5),
-                      child: Row(
-                        children: [
-                          // Filled portion
-                          Container(
-                            width: (progress / 100) * MediaQuery.of(context).size.width,
-                            color: theme.colorScheme.primary,
-                          ),
-                          // Remaining portion is transparent
-                        ],
+                  const SizedBox(height: 8),
+                  
+                  // Bottom row with lessons count and continue button
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      // Lessons count
+                      Text(
+                        '${course.totalLessons} lessons',
+                        style: TextStyle(
+                          color: theme.colorScheme.onSurface.withOpacity(0.6),
+                        ),
                       ),
-                    ),
+                      
+                      // Continue button
+                      OutlinedButton(
+                        onPressed: () {
+                          // In a real app, continue from where user left off
+                          context.go('/course/${course.id}');
+                        },
+                        child: const Text('Continue'),
+                      ),
+                    ],
                   ),
                 ],
               ),
-              
-              // Course info
-              Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Course title
-                    Text(
-                      title,
-                      style: AppTextStyles.heading5.copyWith(
-                        color: theme.colorScheme.onSurface,
-                      ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    const SizedBox(height: 4),
-                    
-                    // Instructor name
-                    Text(
-                      "Instructor: $instructorName",
-                      style: AppTextStyles.bodyMedium.copyWith(
-                        color: theme.colorScheme.onSurface.withOpacity(0.7),
-                      ),
-                    ),
-                    
-                    const SizedBox(height: 12),
-                    
-                    // Progress and last accessed info
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        // Progress text
-                        Text(
-                          "$progress% complete",
-                          style: AppTextStyles.bodySmall.copyWith(
-                            color: theme.colorScheme.primary,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        
-                        // Last accessed date
-                        Text(
-                          "Last accessed: $lastAccessDate",
-                          style: AppTextStyles.bodySmall.copyWith(
-                            color: theme.colorScheme.onSurface.withOpacity(0.5),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              
-              // Continue button
-              Padding(
-                padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-                child: ElevatedButton.icon(
-                  onPressed: onTap ?? () => context.push('/course/$courseId'),
-                  icon: const Icon(Icons.play_circle_outline),
-                  label: const Text('Continue Learning'),
-                  style: ElevatedButton.styleFrom(
-                    minimumSize: const Size(double.infinity, 40),
-                  ),
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
