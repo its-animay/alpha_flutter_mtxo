@@ -22,7 +22,7 @@ class AppRouter {
       debugLogDiagnostics: true,
       redirect: (context, state) {
         final bool isLoggedIn = authService.isAuthenticated;
-        final bool isGoingToAuth = state.location.startsWith('/auth');
+        final bool isGoingToAuth = state.uri.path.startsWith('/auth');
         
         // If not logged in and not going to auth page, redirect to login
         if (!isLoggedIn && !isGoingToAuth) {

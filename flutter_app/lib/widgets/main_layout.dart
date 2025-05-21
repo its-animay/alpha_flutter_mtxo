@@ -51,7 +51,7 @@ class _MainLayoutState extends State<MainLayout> {
   }
 
   void _updateSelectedIndex() {
-    final location = GoRouterState.of(context).location;
+    final location = GoRouterState.of(context).uri.path;
     
     // Find the matching navigation item for the current path
     int index = _navigationItems.indexWhere(
