@@ -234,9 +234,9 @@ class _ProfileScreenState extends State<ProfileScreen> with SingleTickerProvider
                         radius: 50,
                         backgroundColor: Colors.white,
                         backgroundImage: _profileImage != null
-                            ? FileImage(_profileImage!)
+                            ? FileImage(_profileImage!) as ImageProvider<Object>
                             : (user.profileImage != null
-                                ? NetworkImage(user.profileImage!)
+                                ? NetworkImage(user.profileImage!) as ImageProvider<Object>
                                 : null),
                         child: user.profileImage == null && _profileImage == null
                             ? Icon(
