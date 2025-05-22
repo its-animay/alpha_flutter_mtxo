@@ -129,13 +129,13 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                               child: const Icon(
                                 Icons.school_rounded,
                                 size: 60,
-                                color: AppColors.primary,
+                                color: AppTheme.primaryColor,
                               ),
                             ),
                             const SizedBox(height: 24),
                             Text(
                               'MTXO Labs',
-                              style: AppTextStyles.heading1.copyWith(
+                              style: Theme.of(context).textTheme.displayLarge?.copyWith(
                                 color: Colors.white,
                               ),
                               textAlign: TextAlign.center,
@@ -143,7 +143,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                             const SizedBox(height: 8),
                             Text(
                               'Next-Gen Learning Platform',
-                              style: AppTextStyles.heading5.copyWith(
+                              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                                 color: Colors.white.withOpacity(0.9),
                                 fontWeight: FontWeight.normal,
                               ),
@@ -173,7 +173,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                             children: [
                               Text(
                                 'Sign In',
-                                style: AppTextStyles.heading3.copyWith(
+                                style: Theme.of(context).textTheme.titleLarge?.copyWith(
                                   color: theme.colorScheme.onSurface,
                                 ),
                               ),
